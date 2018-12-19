@@ -25,9 +25,8 @@ all:
 # ls /usr/local/lib/python3.6/dist-packages/PyQuantum
 
 push:
-	git add .
-	git commit -m 'init'
-	git push
+	git add .;
+	git commit -m 'init' && git push
 
 # -------------------------------------------------------------------------------------------------
 bp:
