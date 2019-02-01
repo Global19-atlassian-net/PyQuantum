@@ -1,5 +1,4 @@
 import numpy as np
-from math import floor, sqrt
 from PyQuantum.Common.Assert import *
 from PyQuantum.Common.STR import *
 
@@ -69,7 +68,7 @@ class Matrix:
         print()
 
     # ---------------------------------------------------------------------------------------------
-    def write_to_file(self, filename):
+    def to_csv(self, filename):
         with open(filename, "w") as f:
             for i in range(0, self.m):
                 for j in range(0, self.n):

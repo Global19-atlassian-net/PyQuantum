@@ -20,15 +20,24 @@ upgrade:
 	sudo pip3 install --upgrade pyquantum
 
 all:
-	make setup && make send && make upgrade
+	make setup && make send;
+	sudo pip3 install --upgrade pyquantum
 
-# ls /usr/local/lib/python3.6/dist-packages/PyQuantum
+ls:
+	ls /usr/local/lib/python3.6/dist-packages/PyQuantum
 
 push:
-	git add .;
-	git commit -m 'init' && git push
+	git add .
+	git commit -m 'init'
+	git push
 
 # -------------------------------------------------------------------------------------------------
 bp:
 	python3 run_bp.py
+
+bpl:
+	python3 run_bpl.py
+
+tc:
+	python3 run_tc.py
 # -------------------------------------------------------------------------------------------------

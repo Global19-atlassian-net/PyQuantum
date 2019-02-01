@@ -222,7 +222,7 @@ def PyPlot3D(title, z_csv, x_csv, y_csv, t_coeff=1, online=True, path=".", filen
 # fig["layout"].update(scene=dict(aspectmode="data"))
 # online=False
     if online:
-        py.plot(fig, filename=filename)
+        py.iplot(fig, filename=filename)
         # plotly.offline.init_notebook_mode()
         # plotly.offline.iplot(fig, filename="wt.html")
 

@@ -1,113 +1,73 @@
 # -------------------------------------------------------------------------------------------------
-# system
-from PyQuantum.Common.STR import *
-import sys
-# -------------------------------------------------------------------------------------------------
 # Bipartite
-from PyQuantum.Bipartite.Cavity import *
-from PyQuantum.Bipartite.Hamiltonian import *
+from PyQuantum.Bipartite.Cavity import Cavity
 
-from PyQuantum.Bipartite.WaveFunction import *
-from PyQuantum.Bipartite.DensityMatrix import *
+from PyQuantum.Bipartite.Hamiltonian import Hamiltonian
 
-from PyQuantum.Bipartite.Evolution import *
+from PyQuantum.Bipartite.WaveFunction import WaveFunction
+
+from PyQuantum.Bipartite.Evolution import run_wf
 # -------------------------------------------------------------------------------------------------
 # Common
+from PyQuantum.Common.STR import *
 from PyQuantum.Common.LoadPackage import *
 
-from PyQuantum.Common.ext import mkdir
-from PyQuantum.Common.PyPlot import PyPlot3D
+from PyQuantum.Common.Tools import mkdir
+from PyQuantum.Common.PlotBuilder3D import *
+
 from shutil import copyfile
-from numpy.random import rand
-# -------------------------------------------------------------------------------------------------
-# print(123)
-# exit(0)
 # -------------------------------------------------------------------------------------------------
 config = load_pkg("config", "PyQuantum/Bipartite/config.py")
 
 mkdir(config.path)
+
 copyfile("PyQuantum/Bipartite/config.py", config.path + '/config.py')
 # -------------------------------------------------------------------------------------------------
+# Cavity
 cavity = Cavity(n=config.n, wc=config.wc, wa=config.wa, g=config.g)
 
-print("Cavity:", color="green")
-
-print()
-
-cavity.print_n()
-cavity.print_wc()
-cavity.print_wa()
-cavity.print_g()
-
-print("T:", config.T)
-print("nt:", config.nt)
-print("dt:", config.dt)
+cavity.print()
 # -------------------------------------------------------------------------------------------------
+# Hamiltonian
 H = Hamiltonian(capacity=config.capacity, cavity=cavity)
 
+print(len(H.states))
+H.print_states()
+# H.to_csv("H.csv")
+
+# df = pd.DataFrame(H.matrix.data)
+
+# print(df)
+# df.to_csv("H.csv2", float_format='%.3f')
 if __debug__:
-    print("Hamiltonian states:", color="green")
+    H.to_csv(filename=config.H_csv)
 
-    print()
-
-    H.print_states()
-
-    H.write_to_file(filename=config.H_csv)
-    # H.print_html(filename=H_html)
+    H.to_csv("H.csv")
+    # H.print_html(filename=config.H_html)
 # -------------------------------------------------------------------------------------------------
+# WaveFunction
 w_0 = WaveFunction(states=H.states, init_state=config.init_state)
 
-# w_0.set_ampl(state=config.init_state, amplitude=1)
-
-
-# w_0.set_ampl(state=config.init_state, amplitude=0)
-# A = rand(2, 2)
-# A_comp = A.view(dtype=np.complex128)
-
-# w_0.set_ampl(state=st1, ampl=1)
-# w_0.set_ampl(state=st2, ampl=1)
-# st1 = [0, 1*config.n]
-# st2 = [1*config.n, 0]
-# print(st1, st2)
-# w_0.set_ampl(state=st1, amplitude=A_comp[0][0])
-# w_0.set_ampl(state=st2, amplitude=A_comp[1][0])
-
-# B = rand(len(H.states), 2)
-# B_comp = B.view(dtype=np.complex128)
-# print(w_0.states)
-# for k, v in w_0.states.items():
-#     # print(v, v==)
-#     w_0.set_ampl(state=v, amplitude=1)
-# w_0.set_ampl(state=v, amplitude=B_comp[k][0])
-
-w_0.normalize()
-w_0.print()
-
 if __debug__:
-    print("Wave Function:", color="green")
-
-    print()
-
     w_0.print()
 # -------------------------------------------------------------------------------------------------
+# DensityMatrix
 # ro_0 = DensityMatrix(w_0)
 
 # if __debug__:
-#     ro_0.write_to_file(filename=config.ro_0_csv)
+    # ro_0.to_csv(filename=config.ro_0_csv)
 # -------------------------------------------------------------------------------------------------
 
-# run(ro_0, H, dt=config.dt, nt=config.nt, config=config, fidelity_mode=True)
-run_w(w_0, H, dt=config.dt, nt=config.nt, config=config, fidelity_mode=True)
-# run(ro_0, H, dt=config.dt, nt=config.nt, config=config, fidelity_mode=False)
+# run(ro_0=ro_0, H=H, dt=config.dt, nt=config.nt, config=config)
+run_wf(w_0=w_0, H=H, dt=config.dt, nt=config.nt,
+       config=config, fidelity_mode=True)
 
 # -------------------------------------------------------------------------------------------------
 
 y_scale = 1
 
-if config.T < 0.25 * config.mks:
+if config.T < 0.5 * config.mks:
     y_scale = 0.1
-elif config.T <= 0.5 * config.mks:
-    y_scale = 0.025
 elif config.T == 0.5 * config.mks:
     y_scale = 0.01
 elif config.T == 1 * config.mks:
@@ -117,28 +77,35 @@ elif config.T == 5 * config.mks:
     y_scale = 1
 
 
+plt = PlotBuilder3D()
+
+
 if not __debug__ or __debug__:
-    title = ""
-    title += "<b>"
+    # title = ""
+    title = "<b>"
     title += "n = " + str(config.n)
     if config.capacity - config.n > 0:
         title += "<br>" + str(config.capacity - config.n) + \
-            " фотонов в полости"
-    # else:
-    # title += "<br>" + "empty cavity"
-
-    # title += "<br>atoms state: |Ψ<sub>0</sub> i = |11...1>A<sub>0</sub> |00...0>A<sub>1</sub> |vaki<sub>p</sub>" + \
-    #     str(config.init_state)
+            " photons in cavity"
+    title += "<br>atoms state: " + str(config.init_state)
     title += "<br>"
     title += "<br>w<sub>c</sub> = " + wc_str(config.wc)
-    title += "<br>w<sub>a</sub> = " + wa_str(config.wa)
-    title += "<br> g/hw<sub>c</sub> = " + str(config.g/config.wc)
-    title += "<br>"
-    title += "<br>"
+    title += "<br>w<sub>a</sub> = " + wc_str(config.wa)
+    title += "<br>g</sub> = " + wc_str(config.g)
     title += "</b>"
 
-    PyPlot3D(
-        title=title,
+    plt.set_title(title)
+
+    plt.set_xaxis("states")
+    plt.set_yaxis("time, " + T_str_mark(config.T))
+    plt.set_zaxis("prob.")
+
+    plt.set_yscale(y_scale)
+
+    plt.set_width(1200)
+    plt.set_height(650)
+
+    plt.PyPlot3D(
         z_csv=config.path + "/" + "z.csv",
         x_csv=config.path + "/" + "x.csv",
         y_csv=config.path + "/" + "t.csv",
@@ -146,125 +113,196 @@ if not __debug__ or __debug__:
         online=False,
         path=config.path,
         filename="Bipartite",
-        xaxis="states",
-        yaxis="time, " + T_str_mark(config.T),
-        y_scale=y_scale
     )
 # -------------------------------------------------------------------------------------------------
 
-fid_plot = True
-# fid_plot = False
+# fid_plot = True
+# # fid_plot = False
 
-if fid_plot:
-    from PyQuantum.py import *
+# if fid_plot:
+#     from PyQuantum.py import *
 
-    def plot_fidelity(filename=config.fid_csv):
-        z_data = pd.read_csv(filename)
+#     def plot_fidelity(filename=config.fid_csv):
+#         z_data = pd.read_csv(filename)
 
-        t = np.around(np.linspace(0, config.nt, config.nt), 3)
+#         t = np.around(np.linspace(0, config.nt, config.nt), 3)
 
-        title = ""
-        title += "<span style='font-size:18'>"
-        title += "<b>Fidelity</b>"
-        title += "</span>"
-        # title += "<br>"
-        # title += "<span style='font-size:11'>"
-        # title += "n = " + str(config.n)
-        # title += "<br>init. state: " + str(config.init_state)
-        # # title += "<br>t = " + T_str(config.T)
-        # title += "<br>"
-        # title += "<br>w<sub>c</sub> = " + wc_str(config.wc)
-        # title += "<br>w<sub>a</sub> = " + wa_str(config.wa)
-        # title += "<br>g = " + g_str(config.g)
-        # title += "</span>"
+#         title = ""
+#         title += "<span style='font-size:18'>"
+#         title += "<b>Fidelity</b>"
+#         title += "</span>"
+#         # title += "<br>"
+#         # title += "<span style='font-size:11'>"
+#         # title += "n = " + str(config.n)
+#         # title += "<br>init. state: " + str(config.init_state)
+#         # # title += "<br>t = " + T_str(config.T)
+#         # title += "<br>"
+#         # title += "<br>w<sub>c</sub> = " + wc_str(config.wc)
+#         # title += "<br>w<sub>a</sub> = " + wa_str(config.wa)
+#         # title += "<br>g = " + g_str(config.g)
+#         # title += "</span>"
 
-        PYPLOT2D(
-            data_0={
-                "title": title,
-                # "title": "<b>w<sub>c</sub> = w<sub>a</sub> = 2 PI x 0.5 MHz;\tg / (hw<sub>c</sub>) = 0.001<br>" +
-                # "m = g<b>",
-                "x": {
-                    "title": "Time, " + T_str_mark(config.T),
-                    "data": t,
+#         PYPLOT2D(
+#             data_0={
+#                 "title": title,
+#                 # "title": "<b>w<sub>c</sub> = w<sub>a</sub> = 2 PI x 0.5 MHz;\tg / (hw<sub>c</sub>) = 0.001<br>" +
+#                 # "m = g<b>",
+#                 "x": {
+#                     "title": "Time, " + T_str_mark(config.T),
+#                     "data": t,
 
-                    "ticktext": np.around(np.linspace(0, T_str_v(config.T), 11), 3),
-                    "tickvals": np.around(np.linspace(0, config.nt, 11), 3)
-                },
-                "y":
-                {
-                    "title": "Fidelity",
-                    "data": [
-                        z_data["fidelity"],
-                    ]
-                },
-            },
-            online=False,
-            filename=config.path + "/" + "Fidelity"
-        )
+#                     "ticktext": np.around(np.linspace(0, T_str_v(config.T), 11), 3),
+#                     "tickvals": np.around(np.linspace(0, config.nt, 11), 3)
+#                 },
+#                 "y":
+#                 {
+#                     "title": "Fidelity",
+#                     "data": [
+#                         z_data["fidelity"],
+#                     ]
+#                 },
+#             },
+#             online=False,
+#             filename=config.path + "/" + "Fidelity"
+#         )
 
-        return
-        # --------------------------------
+#         return
+#         # --------------------------------
 
-    def plot_fidelity_small(filename=config.fid_csv):
-        z_data = pd.read_csv(filename)
+#     def plot_fidelity_small(filename=config.fid_csv):
+#         z_data = pd.read_csv(filename)
 
-        t = np.around(np.linspace(0, config.nt, config.nt), 3)
+#         t = np.around(np.linspace(0, config.nt, config.nt), 3)
 
-        title = ""
-        title += "<span style='font-size:18'>"
-        title += "<b>Fidelity</b>"
-        title += "</span>"
-        # title += "<br>"
-        # title += "<span style='font-size:11'>"
-        # title += "n = " + str(config.n)
-        # title += "<br>init. state: " + str(config.init_state)
-        # # title += "<br>t = " + T_str(config.T)
-        # title += "<br>"
-        # title += "<br>w<sub>c</sub> = " + wc_str(config.wc)
-        # title += "<br>w<sub>a</sub> = " + wa_str(config.wa)
-        # title += "<br>g = " + g_str(config.g)
-        # title += "</span>"
+#         title = ""
+#         title += "<span style='font-size:18'>"
+#         title += "<b>Fidelity</b>"
+#         title += "</span>"
+#         # title += "<br>"
+#         # title += "<span style='font-size:11'>"
+#         # title += "n = " + str(config.n)
+#         # title += "<br>init. state: " + str(config.init_state)
+#         # # title += "<br>t = " + T_str(config.T)
+#         # title += "<br>"
+#         # title += "<br>w<sub>c</sub> = " + wc_str(config.wc)
+#         # title += "<br>w<sub>a</sub> = " + wa_str(config.wa)
+#         # title += "<br>g = " + g_str(config.g)
+#         # title += "</span>"
 
-        # PYPLOT2D(
-        #     data_0={
-        #         "title": title,
-        #         # "title": "<b>w<sub>c</sub> = w<sub>a</sub> = 2 PI x 0.5 MHz;\tg / (hw<sub>c</sub>) = 0.001<br>" +
-        #         # "m = g<b>",
-        #         "x": {
-        #             "title": "Time, " + T_str_mark(config.T),
-        #             "data": t,
+#         PYPLOT2D(
+#             data_0={
+#                 "title": title,
+#                 # "title": "<b>w<sub>c</sub> = w<sub>a</sub> = 2 PI x 0.5 MHz;\tg / (hw<sub>c</sub>) = 0.001<br>" +
+#                 # "m = g<b>",
+#                 "x": {
+#                     "title": "Time, " + T_str_mark(config.T),
+#                     "data": t,
 
-        #             "ticktext": np.around(np.linspace(0, T_str_v(config.T), 11), 3),
-        #             "tickvals": np.around(np.linspace(0, config.nt, 11), 3)
-        #         },
-        #         "y":
-        #         {
-        #             "title": "Fidelity",
-        #             "data": [
-        #                 z_data["fidelity"],
-        #             ]
-        #         },
-        #     },
-        #     online=False,
-        #     filename=config.path + "/" + "Fidelity_small"
-        # )
+#                     "ticktext": np.around(np.linspace(0, T_str_v(config.T), 11), 3),
+#                     "tickvals": np.around(np.linspace(0, config.nt, 11), 3)
+#                 },
+#                 "y":
+#                 {
+#                     "title": "Fidelity",
+#                     "data": [
+#                         z_data["fidelity"],
+#                     ]
+#                 },
+#             },
+#             online=False,
+#             filename=config.path + "/" + "Fidelity_small"
+#         )
 
-        return
-        # --------------------------------
-    # plot_fidelity(config.fid_csv)
+#         return
+#         # --------------------------------
+#     plot_fidelity(config.fid_csv)
     # plot_fidelity(config.fid_small_csv)
     # plot_fidelity_small(config.fid_small_csv)
 
-# if __name__ == '__main__':
-    # run()
+# if not __debug__:
+#     title = "<b>"
+#     title += "capacity = " + str(config.capacity) + ", n = " + str(config.n)
+
+#     title += "<br>w<sub>c</sub> = " + wc_str(config.wc)
+#     title += "<br>w<sub>a</sub> = " + \
+#         "[" + ", ".join([wa_str(i) for i in config.wa]) + "]"
+#     title += "<br>g = " + "[" + ", ".join([g_str(i) for i in config.g]) + "]"
+#     title += "<br>t = " + T_str(config.T)
+#     title += "</b>"
+
+#     PyPlot3D(
+#         title=title,
+#         z_csv=config.path + "/" + "z.csv",
+#         x_csv=config.path + "/" + "x.csv",
+#         y_csv=config.path + "/" + "t.csv",
+#         online=False,
+#         path=config.path,
+#         filename="Bipartite",
+#         xaxis="states",
+#         yaxis="time, mks",
+#         y_scale=y_scale
+#     )
+# # -------------------------------------------------------------------------------------------------
+
+# # -------------------------------------------------------------------------------------------------
+# # from py import *
 
 
-# import PyQuantum.TCM
-# import PyQuantum.Common
-# import PyQuantum.TCM.TCM
+# # def plot_fidelity(filename=fid_csv):
+# #     z_data = pd.read_csv(filename)
 
-# print(dir(PyQuantum.TCM))
-# PyQuantum.TCM.TCM_print()
-# PyQuantum.TCM.TCM.TCM_print()
+# #     t = np.around(np.linspace(0, nt, nt), 3)
 
-# print(PyQuantum.TCM.__file__)
+# #     PYPLOT2D(
+# #         data_0={
+# #             "title": "<b>Fidelity</b>",
+# #             # "title": "<b>w<sub>c</sub> = w<sub>a</sub> = 2 PI x 0.5 MHz;\tg / (hw<sub>c</sub>) = 0.001<br>" +
+# #             # "m = g<b>",
+# #             "x": {
+# #                 "title": "Time, mks",
+# #                 "data": t,
+
+# #                 "ticktext": np.around(np.linspace(0, T * 1e6, 11), 3),
+# #                 "tickvals": np.around(np.linspace(0, config.nt, 11), 3)
+# #             },
+# #             "y":
+# #             {
+# #                 "title": "Fidelity",
+# #                 "data": [
+# #                     z_data["fidelity"],
+# #                 ]
+# #             },
+# #         },
+# #         online=False,
+# #         filename=path + "/" + "Fidelity"#     )
+
+# #     return
+# # -------------------------------------------------------------------------------------------------
+
+# # plot_fidelity()
+
+
+# # # print([0, [0] * 3 + [1] * 3])
+# # st1 = [0, [0, 0, 0, 1, 1, 1]]
+# # st2 = [0, [1, 1, 1, 0, 0, 0]]
+
+# # w_0.set_ampl(state=init_state, ampl=0)
+# # A = rand(2, 2)
+# # A_comp = A.view(dtype=np.complex128)
+
+# # # w_0.set_ampl(state=st1, ampl=1)
+# # # w_0.set_ampl(state=st2, ampl=1)
+
+# # w_0.set_ampl(state=st1, ampl=A_comp[0][0])
+# # w_0.set_ampl(state=st2, ampl=A_comp[1][0])
+
+# # B = rand(len(H.states), 2)
+# # B_comp = B.view(dtype=np.complex128)
+# # print(B_comp)
+# # for k, v in H.states.items():
+# #     w_0.set_ampl(state=v, ampl=B_comp[k][0])
+
+# # w_0.normalize()
+# # w_0.print()
+
+# # # exit(1)

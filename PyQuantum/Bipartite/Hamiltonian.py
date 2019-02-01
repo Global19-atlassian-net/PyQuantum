@@ -5,45 +5,42 @@ import numpy as np
 # system
 from math import sqrt
 from PyQuantum.Common.html import *
+from PyQuantum.Bipartite.Cavity import Cavity
 import copy
 # -------------------------------------------------------------------------------------------------
 # Common
 from PyQuantum.Common.Matrix import *
 from PyQuantum.Common.Assert import *
 from PyQuantum.Common.Print import *
-# from PyQuantum.Common.ext import cf, print_error
 # -------------------------------------------------------------------------------------------------
-import html
 import pandas as pd
-import webbrowser
 
 
 class Hamiltonian:
-
     # ---------------------------------------------------------------------------------------------
     def __init__(self, capacity, cavity):
+        Assert(isinstance(cavity, Cavity), "cavity is not Cavity", cf())
+        Assert(isinstance(capacity, int), "capacity is not int", cf())
+        Assert(capacity > 0, "capacity <=0", cf())
+
         self.cavity = cavity
 
         self.D = {}
 
-        count = 0
+        # ------------
+        n = cavity.n
 
-        M = capacity
-        self.n = n = cavity.n
         wc = cavity.wc
         wa = cavity.wa
         g = cavity.g
+        # ------------
 
-        _min = min(M, n)
+        _min = min(capacity, n)
 
         self.states = {}
 
         # ---------------------------------------
-        for i1 in range(0, _min + 1):
-            for i2 in range(0, min(n, M - i1) + 1):
-                self.states[count] = [i1, i2]
-
-                count += 1
+        self.init_states(capacity, n)
         # ---------------------------------------
 
         self.size = len(self.states)
@@ -52,11 +49,11 @@ class Hamiltonian:
         i = 1
 
         for i1 in range(0, _min + 1):
-            for i2 in range(0, min(n, M - i1) + 1):
+            for i2 in range(0, min(n, capacity - i1) + 1):
                 j = 1
 
                 for j1 in range(0, _min + 1):
-                    for j2 in range(0, min(n, M - j1) + 1):
+                    for j2 in range(0, min(n, capacity - j1) + 1):
                         if i1 != j1:
                             p = [i1, j1]
                         elif i2 != j2:
@@ -69,25 +66,19 @@ class Hamiltonian:
                         kappa = sqrt((n - mi) * (mi + 1))
 
                         if abs(i1 - j1) + abs(i2 - j2) == 1:
-                            _max = max(M - i1 - i2, M - j1 - j2)
+                            _max = max(capacity - i1 - i2, capacity - j1 - j2)
                             self.matrix.data[i - 1, j - 1] = g * \
-                                sqrt(max(M - i1 - i2, M - j1 - j2)) * kappa
+                                sqrt(max(capacity - i1 - i2,
+                                         capacity - j1 - j2)) * kappa
                         elif abs(i1 - j1) + abs(i2 - j2) == 0:
                             self.matrix.data[i - 1, j -
-                                             1] = (M - (i1 + i2)) * wc + (i1 + i2) * wa
+                                             1] = (capacity - (i1 + i2)) * wc + (i1 + i2) * wa
                         else:
                             self.matrix.data[i - 1, j - 1] = 0
 
                         j += 1
 
                 i += 1
-
-        # self.data = self.matrix.data
-        # self.size = np.shape(self.data)[0]
-        # self.print_states()
-        # print(len(self.states), np.shape(self.data))
-        # exit(1)
-
     # ---------------------------------------------------------------------------------------------
 
     # ---------------------------------------------------------------------------------------------
@@ -98,67 +89,28 @@ class Hamiltonian:
     # ---------------------------------------------------------------------------------------------
 
     # ---------------------------------------------------------------------------------------------
-    def write_to_file(self, filename):
-        self.matrix.write_to_file(filename)
+    def to_csv(self, filename):
+        self.matrix.to_csv(filename)
     # ---------------------------------------------------------------------------------------------
 
     # ---------------------------------------------------------------------------------------------
     def get_states(self):
         return self.states
-    # ---------------------------------------------------------------------------------------------
 
-    def print_html(self, filename):
-        f = open(filename, "w")
+    def init_states(self, capacity, n):
+        _min = min(capacity, n)
 
-        # html = """            <!DOCTYPE html>
-        #     <html>
-        #         <head>
-        #             <title>
-        #                 States
-        #             </title>
-        #         </head>
+        count = 0
 
-        #         <body>
-        #             <table border=1>
-        #     """
-        # html += "<tr>"        html += "<td>"        html += "</td>"
-        # # for i in range(0, len(self.states)):
-        # #     html += "<td>"        #     html += "[" + str(self.states[i].n1) + "," + str(self.states[i].n2) + "]"        #     html += "</td>"
-        # # html += "</tr>"
-        # # for i in range(0, len(self.states)):
-        # #     html += "<tr>"        #     html += "<td>"        #     html += "[" + str(self.states[i].n1) + "," + str(self.states[i].n2) + "]"        #     html += "</td>"
-        # #     for j in range(0, len(self.states)):
-        # #         html += "<td>"
-        # #         if sqrt:
-        # #             html += "&radic;" + "<span style="text-decoration:overline;">" + str(abs(self.matrix.data[i, j]) / self.g) + "</span>"        #         else:
-        # #             html += "&radic;" + "<span style="text-decoration:overline;">" + str(abs(self.matrix.data[i, j])) + "</span>"
-        # #         html += "</td>"
-        # #     html += "</tr>"
-        # html += """                    </table>
-        #         </body>
-        #     </html>
-        #     """
-        # f.write(html)
-        f.close()
+        for i1 in range(0, _min + 1):
+            for i2 in range(0, min(n, capacity - i1) + 1):
+                self.states[count] = [i1, i2]
 
-        webbrowser.open(filename)
-    # ---------------------------------------------------------------------------------------------
+                count += 1
 
     # ---------------------------------------------------------------------------------------------
-    # def init_states(self):
-    #     self.states = []
-
-    #     s = St(self.cavity)
-
-    #     self.states.append(copy.copy(s))
-
-    #     while(s.inc()):
-    #         self.states.append(copy.copy(s))
-    # ---------------------------------------------------------------------------------------------
-
-    # ---------------------------------------------------------------------------------------------
-    def print_states(self):
-        print("States:", color="green")
+    def print_states(self, title="States:"):
+        print(title, color="green")
 
         print()
 

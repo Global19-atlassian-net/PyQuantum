@@ -1,0 +1,864 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     29642,        855]
+NotebookOptionsPosition[     27634,        779]
+NotebookOutlinePosition[     28052,        795]
+CellTagsIndexPosition[     28009,        792]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Hydrogen Atom Probability Density", "Title",
+ Evaluatable->False,
+ CellChangeTimes->{{3.5634662799668837`*^9, 3.563466280341642*^9}, {
+  3.563534479156671*^9, 3.563534486573901*^9}},
+ AspectRatioFixed->True],
+
+Cell[CellGroupData[{
+
+Cell["1. Introduction", "Section",
+ Evaluatable->False,
+ AspectRatioFixed->True],
+
+Cell[TextData[{
+ StyleBox["In this computational laboratory you will take advantage of one of \
+",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["Mathematica",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox["'s unique plotting tools to visualize the probability of the \
+electron in a hydrogen atom. A density plot shows the value of a function of \
+two variables where colors are associated with the value of the function. You \
+will use this visualization technique to develop intuition about the hydrogen \
+atom probability.",
+  Evaluatable->False,
+  AspectRatioFixed->True]
+}], "Text",
+ Evaluatable->False,
+ CellChangeTimes->{{3.563466285427328*^9, 3.563466286014176*^9}, {
+  3.563468663723061*^9, 3.563468735525614*^9}},
+ AspectRatioFixed->True]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["2. Necessary Commands and Definitions", "Section",
+ Evaluatable->False,
+ AspectRatioFixed->True],
+
+Cell["\<\
+The functions and algorithms needed to complete this laboratory are contained \
+in this section.\
+\>", "Text",
+ Evaluatable->False,
+ AspectRatioFixed->True],
+
+Cell[CellGroupData[{
+
+Cell["2.1 Input Parameters", "Subsection",
+ Evaluatable->False,
+ AspectRatioFixed->True],
+
+Cell["\<\
+The user parameters are described here and defined in the cell below.
+
+                  n - principle quantum number
+                  l - angular momentum quantum number
+                  m - z-component of the angular momentum\
+\>", "Text",
+ Evaluatable->False,
+ CellChangeTimes->{{3.5634686432499228`*^9, 3.56346864462547*^9}},
+ AspectRatioFixed->True],
+
+Cell["\<\
+n = 4;
+l = 2;
+m = 1;\
+\>", "Input",
+ CellChangeTimes->{{3.5625162835468388`*^9, 3.562516284410767*^9}, {
+  3.563468934124652*^9, 3.563468934749461*^9}},
+ AspectRatioFixed->True]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["2.2 Using Laguerre polynomials and spherical harmonics.", "Subsection",
+ Evaluatable->False,
+ CellChangeTimes->{{3.563750226123983*^9, 3.563750230133944*^9}, {
+  3.563750622054124*^9, 3.5637506223809547`*^9}},
+ AspectRatioFixed->True],
+
+Cell[TextData[{
+ "The solution to the hydrogen atom Schroedinger equation consists of \
+Laguerre polynomials and spherical harmonics. The commands in ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " to use those functions are shown below. The values of the ",
+ StyleBox["n",
+  FontSlant->"Italic"],
+ ", ",
+ StyleBox["l",
+  FontSlant->"Italic"],
+ ", and ",
+ StyleBox["m",
+  FontSlant->"Italic"],
+ " are set in part 2.1. Notice the spherical harmonic can be complex."
+}], "Text",
+ CellChangeTimes->{{3.56346524203685*^9, 3.563465339725058*^9}, {
+  3.563465576367138*^9, 3.5634655883395844`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"LaguerreL", "[", 
+   RowBox[{
+    RowBox[{"n", "-", "l", "-", "1"}], ",", " ", 
+    RowBox[{
+     RowBox[{"2", "*", "l"}], " ", "+", " ", "1"}], ",", "2.3"}], "]"}], "  ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"for", " ", "r"}], "=", "2.3"}], " ", "*)"}]}]], "Input",
+ CellChangeTimes->{{3.563465425700818*^9, 3.563465484715674*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"SphericalHarmonicY", "[", 
+   RowBox[{"l", ",", " ", "m", ",", " ", "0.2", ",", " ", "0.3"}], "]"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"for", " ", "\[Theta]"}], " ", "=", " ", 
+     RowBox[{"0.2", " ", "radians"}]}], ",", " ", 
+    RowBox[{"\[Phi]", " ", "=", " ", 
+     RowBox[{"0.3", " ", 
+      RowBox[{"radians", "."}]}]}]}], " ", "*)"}]}]], "Input",
+ CellChangeTimes->{{3.5634654668386602`*^9, 3.563465558749991*^9}, {
+  3.563470244195797*^9, 3.563470256514258*^9}}],
+
+Cell["\<\
+To calculate probability densities or probabilities we  take the square of \
+the magnitude as shown here and then pluck off the real part (the imaginary \
+part should be zero).\
+\>", "Text",
+ CellChangeTimes->{{3.5634658191521397`*^9, 3.563465860116468*^9}, {
+  3.563465911251864*^9, 3.5634659288870077`*^9}, {3.563751255339395*^9, 
+  3.563751255985083*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"test", "=", 
+  RowBox[{
+   RowBox[{"SphericalHarmonicY", "[", 
+    RowBox[{"l", ",", " ", "m", ",", " ", "0.2", ",", " ", "0.3"}], "]"}], 
+   "*", 
+   RowBox[{"Conjugate", "[", 
+    RowBox[{"SphericalHarmonicY", "[", 
+     RowBox[{"l", ",", " ", "m", ",", " ", "0.2", ",", " ", "0.3"}], "]"}], 
+    "]"}]}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Re", "[", "test", "]"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"x", "=", 
+     RowBox[{
+      RowBox[{"1", "\[IndentingNewLine]", "z"}], "=", 
+      RowBox[{
+       RowBox[{"1", "\[IndentingNewLine]", "r"}], "=", 
+       RowBox[{
+        RowBox[{"Norm", "[", 
+         RowBox[{"{", 
+          RowBox[{"x", ",", "0", ",", "z"}], "}"}], "]"}], 
+        "\[IndentingNewLine]", 
+        RowBox[{"Print", "[", 
+         RowBox[{"\"\<r=\>\"", ",", "r"}], "]"}], "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"Foo", "[", 
+          RowBox[{
+          "n_", ",", "l_", ",", "m_", ",", "x_", ",", " ", "z_", ",", " ", 
+           "r_"}], "]"}], ":=", 
+         RowBox[{"4", " ", "\[Pi]", " ", 
+          RowBox[{"r", "^", "2"}], " ", 
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{"Rnl", "[", 
+             RowBox[{"n", ",", "l", ",", "r"}], "]"}], ")"}], "^", "2"}], " ", 
+          RowBox[{"Re", "[", 
+           RowBox[{
+            RowBox[{"Ylm", "[", 
+             RowBox[{"l", ",", "m", ",", 
+              RowBox[{"ArcCos", "[", 
+               RowBox[{"z", "/", "r"}], "]"}], ",", 
+              RowBox[{"ArcTan", "[", 
+               RowBox[{"x", ",", "0"}], "]"}]}], "]"}], "*", 
+            RowBox[{"Conjugate", "[", 
+             RowBox[{"Ylm", "[", 
+              RowBox[{"l", ",", "m", ",", 
+               RowBox[{"ArcCos", "[", 
+                RowBox[{"z", "/", "r"}], "]"}], ",", 
+               RowBox[{"ArcTan", "[", 
+                RowBox[{"x", ",", "0"}], "]"}]}], "]"}], "]"}]}], 
+           "]"}]}]}]}]}]}]}], ";", "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{
+      RowBox[{"N", "[", 
+       RowBox[{"Foo", "[", 
+        RowBox[{
+        "n", ",", "l", ",", "m", ",", "x", ",", " ", "z", ",", " ", "r"}], 
+        "]"}], "]"}], ",", "5"}], "]"}]}], "\[IndentingNewLine]", 
+   "*)"}]}], "\[IndentingNewLine]"}], "Input",
+ CellChangeTimes->{{3.5634658744396563`*^9, 3.563465882540616*^9}, {
+  3.563465937776528*^9, 3.5634659454883757`*^9}, {3.754475585474752*^9, 
+  3.754475656930985*^9}, {3.754475748103676*^9, 3.7544757987738657`*^9}, {
+  3.754476008473138*^9, 3.754476033340754*^9}, {3.754476142833139*^9, 
+  3.75447624999804*^9}, {3.7544763360006523`*^9, 3.754476345724004*^9}, {
+  3.754477042696497*^9, 3.754477053242279*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Conjugate", "[", 
+   RowBox[{"SphericalHarmonicY", "[", 
+    RowBox[{"l", ",", "m", ",", "0.2`", ",", "0.3`"}], "]"}], "]"}], " ", 
+  RowBox[{"SphericalHarmonicY", "[", 
+   RowBox[{"l", ",", "m", ",", "0.2`", ",", "0.3`"}], "]"}]}]], "Output",
+ CellChangeTimes->{
+  3.7544756608644648`*^9, 3.754475742650112*^9, 3.754475800610861*^9, {
+   3.754476021157054*^9, 3.754476035170768*^9}, 3.7544762515967293`*^9, 
+   3.754476347954533*^9, 3.754477054569368*^9}],
+
+Cell[BoxData[
+ RowBox[{"Re", "[", 
+  RowBox[{
+   RowBox[{"Conjugate", "[", 
+    RowBox[{"SphericalHarmonicY", "[", 
+     RowBox[{"l", ",", "m", ",", "0.2`", ",", "0.3`"}], "]"}], "]"}], " ", 
+   RowBox[{"SphericalHarmonicY", "[", 
+    RowBox[{"l", ",", "m", ",", "0.2`", ",", "0.3`"}], "]"}]}], 
+  "]"}]], "Output",
+ CellChangeTimes->{
+  3.7544756608644648`*^9, 3.754475742650112*^9, 3.754475800610861*^9, {
+   3.754476021157054*^9, 3.754476035170768*^9}, 3.7544762515967293`*^9, 
+   3.754476347954533*^9, 3.754477054587378*^9}]
+}, Open  ]],
+
+Cell["", "PageBreak",
+ PageBreakBelow->True]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["2.3 Define the Hydrogen Atom Wave Function.", "Subsection",
+ Evaluatable->False,
+ CellChangeTimes->{{3.563465382657135*^9, 3.5634653828263893`*^9}},
+ AspectRatioFixed->True],
+
+Cell["\<\
+The hydrogen atom wave functions are defined here and parameters chosen to \
+determine specific wave functions (i.e., the principle quantum number, the \
+angular momentum, and its z-component). Note the radial part is not properly \
+normalized to make the scaling the plots easier.\
+\>", "Text",
+ Evaluatable->False,
+ CellChangeTimes->{{3.563748905149673*^9, 3.563748967999671*^9}, {
+  3.56374934311574*^9, 3.5637493486627407`*^9}},
+ AspectRatioFixed->True],
+
+Cell["\<\
+Rnl[n_,l_,r_] := (r^l)*Exp[-r/2]*LaguerreL[n-l-1, 2*l + 1,r];
+Ylm[l_, m_, theta_, phi_] := SphericalHarmonicY[l, m, theta, phi];\
+\>", "Input",
+ CellChangeTimes->{{3.562515891644867*^9, 3.5625158923150682`*^9}, {
+  3.563468852883048*^9, 3.563468899397603*^9}},
+ AspectRatioFixed->True]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["2.4 Define the Density Plot.", "Subsection",
+ Evaluatable->False,
+ CellChangeTimes->{{3.563465382657135*^9, 3.5634653828263893`*^9}, {
+  3.563750819242436*^9, 3.5637508263708467`*^9}},
+ AspectRatioFixed->True],
+
+Cell[TextData[{
+ "The density plot is applied inside the ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ "  ",
+ StyleBox["Manipulate",
+  FontFamily->"Monospace"],
+ " command to allow easy modifications of the parameters by the user. The \
+parameters of the plot are set by clicking on the buttons or moving the \
+sliders. The code is adapted from Reference [1] below. Here are some notes on \
+running the calculation.\n\n1. Depending on your choice of the principle \
+quantum number ",
+ StyleBox["n",
+  FontSlant->"Italic"],
+ ", these calculations are compute-intensive, i.e. they take a long time. The \
+slides may not be very responsive so the best way to use them is to click at \
+a point on the slider\[CloseCurlyQuote]s scale, see that the cell backet is \
+highlighted as the calculation runs,  and after a few seconds the result will \
+be displayed.\n\n2. The vertical scale slider is a logarithmic scale; \
+changing the value by one changes the scale by a factor of ten. Once you set \
+the scale above a certain maximum, the plot will not change."
+}], "Text",
+ Evaluatable->False,
+ CellChangeTimes->{{3.563748905149673*^9, 3.563748967999671*^9}, {
+   3.56374934311574*^9, 3.5637493486627407`*^9}, {3.563750927536673*^9, 
+   3.5637509346916637`*^9}, {3.56375098997584*^9, 3.563751048383396*^9}, 
+   3.5637510940862093`*^9, {3.563788608458797*^9, 3.563788917564406*^9}},
+ AspectRatioFixed->True],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"If", "[", 
+     RowBox[{
+      RowBox[{"l", "\[GreaterEqual]", "n"}], ",", 
+      RowBox[{"l", "=", 
+       RowBox[{"n", "-", "1"}]}]}], "]"}], ";", "\[IndentingNewLine]", 
+    RowBox[{"If", "[", 
+     RowBox[{
+      RowBox[{"m", ">", "l"}], ",", 
+      RowBox[{"m", "=", "l"}]}], "]"}], ";", "\[IndentingNewLine]", 
+    RowBox[{"DensityPlot", "[", 
+     RowBox[{
+      RowBox[{"Module", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"r", "=", 
+          RowBox[{"Norm", "[", 
+           RowBox[{"{", 
+            RowBox[{"x", ",", "0", ",", "z"}], "}"}], "]"}]}], "}"}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{"(*", " ", 
+         RowBox[{"factor", " ", "0", "f", " ", "4", 
+          SuperscriptBox["\[Pi]r", "2"], " ", "in", " ", "included", " ", 
+          "to", " ", "make", " ", "scaling", " ", "the", " ", "plots", " ", 
+          RowBox[{"easier", "."}]}], " ", "*)"}], 
+        RowBox[{"4", " ", "\[Pi]", " ", 
+         RowBox[{"r", "^", "2"}], " ", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"Rnl", "[", 
+            RowBox[{"n", ",", "l", ",", "r"}], "]"}], ")"}], "^", "2"}], " ", 
+         
+         RowBox[{"Re", "[", 
+          RowBox[{
+           RowBox[{"Ylm", "[", 
+            RowBox[{"l", ",", "m", ",", 
+             RowBox[{"ArcCos", "[", 
+              RowBox[{"z", "/", "r"}], "]"}], ",", 
+             RowBox[{"ArcTan", "[", 
+              RowBox[{"x", ",", "0"}], "]"}]}], "]"}], "*", 
+           RowBox[{"Conjugate", "[", 
+            RowBox[{"Ylm", "[", 
+             RowBox[{"l", ",", "m", ",", 
+              RowBox[{"ArcCos", "[", 
+               RowBox[{"z", "/", "r"}], "]"}], ",", 
+              RowBox[{"ArcTan", "[", 
+               RowBox[{"x", ",", "0"}], "]"}]}], "]"}], "]"}]}], "]"}]}]}], 
+       "\[IndentingNewLine]", " ", "]"}], 
+      RowBox[{"(*", " ", 
+       RowBox[{"end", " ", "of", " ", "Module"}], " ", "*)"}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{"{", 
+       RowBox[{"x", ",", 
+        RowBox[{"-", "side"}], ",", "side"}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"z", ",", 
+        RowBox[{"-", "side"}], ",", "side"}], "}"}], ",", 
+      RowBox[{"Mesh", "\[Rule]", "False"}], ",", 
+      RowBox[{"Frame", "\[Rule]", "False"}], ",", 
+      RowBox[{"PlotPoints", "\[Rule]", 
+       RowBox[{"Round", "[", "resolution", "]"}]}], ",", 
+      RowBox[{"ColorFunctionScaling", "\[Rule]", "True"}], ",", 
+      RowBox[{"ColorFunction", "\[Rule]", "\"\<SunsetColors\>\""}], ",", 
+      RowBox[{"PlotRange", "\[Rule]", 
+       RowBox[{"{", 
+        RowBox[{"0", ",", 
+         RowBox[{"10", "^", "scale"}]}], "}"}]}]}], "]"}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"n", ",", "1", ",", "\"\<principal quantum number\>\""}], "}"}],
+      ",", "1", ",", "8", ",", "1", ",", 
+     RowBox[{"ControlType", "\[Rule]", "Setter"}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"l", ",", "0", ",", "\"\<angular momentum\>\""}], "}"}], ",", 
+     RowBox[{"Range", "[", 
+      RowBox[{"0", ",", 
+       RowBox[{"n", "-", "1"}]}], "]"}], ",", 
+     RowBox[{"ControlType", "\[Rule]", "SetterBar"}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"m", ",", "0", ",", "\"\<magnetic quantum number\>\""}], "}"}], 
+     ",", 
+     RowBox[{"Range", "[", 
+      RowBox[{"0", ",", "l"}], "]"}], ",", 
+     RowBox[{"ControlType", "\[Rule]", "SetterBar"}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"side", ",", "40", ",", "\"\<Length of a side\>\""}], "}"}], 
+     ",", "1", ",", "200", ",", 
+     RowBox[{"ControlType", "\[Rule]", 
+      RowBox[{"Slider", "[", 
+       RowBox[{"Dynamic", "[", "side", "]"}], "]"}]}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"scale", ",", "16", ",", "\"\<Vertical Scale\>\""}], "}"}], ",",
+      "1", ",", "30", ",", 
+     RowBox[{"ControlType", "\[Rule]", 
+      RowBox[{"Slider", "[", 
+       RowBox[{"Dynamic", "[", "scale", "]"}], "]"}]}]}], "}"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"resolution", ",", "40", ",", "\"\<Resolution\>\""}], "}"}], 
+     ",", "30", ",", "100", ",", 
+     RowBox[{"ControlType", "\[Rule]", 
+      RowBox[{"Slider", "[", 
+       RowBox[{"Dynamic", "[", "scale", "]"}], "]"}]}]}], "}"}]}], 
+  "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.563464095580614*^9, 3.5634640955848846`*^9}, {
+   3.5634641580396557`*^9, 3.563464158461391*^9}, {3.563469017461768*^9, 
+   3.563469017671096*^9}, {3.5634690597446527`*^9, 3.56346908808565*^9}, {
+   3.563469324810752*^9, 3.5634693259068403`*^9}, {3.563469364694085*^9, 
+   3.563469381170945*^9}, {3.56346941467188*^9, 3.5634694185309343`*^9}, {
+   3.5634695314278307`*^9, 3.563469541384169*^9}, {3.563469813124949*^9, 
+   3.563469860310522*^9}, 3.563745622390526*^9, {3.5637457655973997`*^9, 
+   3.563745783485305*^9}, {3.5637488188223658`*^9, 3.5637488827256002`*^9}, {
+   3.563749278338357*^9, 3.563749322989469*^9}, {3.563749353136346*^9, 
+   3.563749359498769*^9}, {3.563749639136737*^9, 3.563749639505324*^9}, {
+   3.754475566461945*^9, 3.7544755733085213`*^9}, {3.754476906198657*^9, 
+   3.7544769097235947`*^9}, {3.7544769950856752`*^9, 3.754477004319674*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`l$$ = 0, $CellContext`m$$ = 
+    0, $CellContext`n$$ = 1, $CellContext`resolution$$ = 
+    40, $CellContext`scale$$ = 16, $CellContext`side$$ = 40, Typeset`show$$ = 
+    True, Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`n$$], 1, "principal quantum number"}, 1, 8, 1}, {{
+       Hold[$CellContext`l$$], 0, "angular momentum"}, 
+      Dynamic[
+       Range[0, $CellContext`n$$ - 1]]}, {{
+       Hold[$CellContext`m$$], 0, "magnetic quantum number"}, 
+      Dynamic[
+       Range[0, $CellContext`l$$]]}, {{
+       Hold[$CellContext`side$$], 40, "Length of a side"}, 1, 200}, {{
+       Hold[$CellContext`scale$$], 16, "Vertical Scale"}, 1, 30}, {{
+       Hold[$CellContext`resolution$$], 40, "Resolution"}, 30, 100}}, 
+    Typeset`size$$ = {360., {177., 183.}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`n$39288$$ = 0, $CellContext`side$39289$$ = 
+    0, $CellContext`scale$39290$$ = 0, $CellContext`resolution$39291$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     1, StandardForm, 
+      "Variables" :> {$CellContext`l$$ = 0, $CellContext`m$$ = 
+        0, $CellContext`n$$ = 1, $CellContext`resolution$$ = 
+        40, $CellContext`scale$$ = 16, $CellContext`side$$ = 40}, 
+      "ControllerVariables" :> {
+        Hold[$CellContext`n$$, $CellContext`n$39288$$, 0], 
+        Hold[$CellContext`side$$, $CellContext`side$39289$$, 0], 
+        Hold[$CellContext`scale$$, $CellContext`scale$39290$$, 0], 
+        Hold[$CellContext`resolution$$, $CellContext`resolution$39291$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, 
+      "Body" :> (
+       If[$CellContext`l$$ >= $CellContext`n$$, $CellContext`l$$ = \
+$CellContext`n$$ - 1]; 
+       If[$CellContext`m$$ > $CellContext`l$$, $CellContext`m$$ = \
+$CellContext`l$$]; DensityPlot[
+         Module[{$CellContext`r$ = Norm[{$CellContext`x, 0, $CellContext`z}]},
+           4 Pi $CellContext`r$^2 $CellContext`Rnl[$CellContext`n$$, \
+$CellContext`l$$, $CellContext`r$]^2 
+          Re[$CellContext`Ylm[$CellContext`l$$, $CellContext`m$$, 
+              ArcCos[$CellContext`z/$CellContext`r$], 
+              ArcTan[$CellContext`x, 0]] Conjugate[
+              $CellContext`Ylm[$CellContext`l$$, $CellContext`m$$, 
+               ArcCos[$CellContext`z/$CellContext`r$], 
+               
+               ArcTan[$CellContext`x, 
+                0]]]]], {$CellContext`x, -$CellContext`side$$, \
+$CellContext`side$$}, {$CellContext`z, -$CellContext`side$$, \
+$CellContext`side$$}, Mesh -> False, Frame -> False, PlotPoints -> 
+         Round[$CellContext`resolution$$], ColorFunctionScaling -> True, 
+         ColorFunction -> "SunsetColors", 
+         PlotRange -> {0, 10^$CellContext`scale$$}]), 
+      "Specifications" :> {{{$CellContext`n$$, 1, "principal quantum number"},
+          1, 8, 1, ControlType -> 
+         Setter}, {{$CellContext`l$$, 0, "angular momentum"}, 
+         Dynamic[
+          Range[0, $CellContext`n$$ - 1]], ControlType -> 
+         SetterBar}, {{$CellContext`m$$, 0, "magnetic quantum number"}, 
+         Dynamic[
+          Range[0, $CellContext`l$$]], ControlType -> 
+         SetterBar}, {{$CellContext`side$$, 40, "Length of a side"}, 1, 200, 
+         ControlType -> Dynamic[
+           Slider[
+            Dynamic[$CellContext`side$$]]]}, {{$CellContext`scale$$, 16, 
+          "Vertical Scale"}, 1, 30, ControlType -> Dynamic[
+           Slider[
+            Dynamic[$CellContext`scale$$]]]}, {{$CellContext`resolution$$, 40,
+           "Resolution"}, 30, 100, ControlType -> Dynamic[
+           Slider[
+            Dynamic[$CellContext`scale$$]]]}}, "Options" :> {}, 
+      "DefaultOptions" :> {}],
+     ImageSizeCache->{407., {287., 294.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{3.754477062513084*^9}]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["3. Analysis", "Section",
+ Evaluatable->False,
+ CellChangeTimes->{{3.563469600334004*^9, 3.5634696006686163`*^9}},
+ AspectRatioFixed->True],
+
+Cell["\<\
+1. Clearly state in standard notation the hydrogen atom wave function. \
+Describe the meaning of each quantum number.\
+\>", "Text",
+ Evaluatable->False,
+ AspectRatioFixed->True],
+
+Cell[TextData[{
+ StyleBox["2. For ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["n",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox["=2, what are allowed values of ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["l",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox["  and ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["m",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[" ?\n\n3. Generate a plot of the radial probability density ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["P(r) ",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox["(integrated over the angular part) for ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["n=2",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[", ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["l=1",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[", ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["m=1",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[", and ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["r< 20",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[". Make sure ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["P(r)",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[" is properly normalized.\n\n4. Generate a plot of the angular \
+probability density ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["n=2",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[", ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["l=1",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[", ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["m=1",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[" as a function of ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ "\[Theta]",
+ StyleBox[" for the full range of",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox[" ",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ "\[Theta].\n",
+ StyleBox["\n5. Consider the density plot for the ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["n=3",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[", ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["l=2",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[", ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["m=0",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[" state. What do the bright regions represent? What, if anything, \
+does this density plot tell you about the trajectories of the electrons in \
+the hydrogen atom?\n\n6. Choose two sets of quantum numbers ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["n",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[",",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox[" l",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[", ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["m",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[" in the ranges ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["3<n<8",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[", ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["1<l<n-1",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[", and ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["m>0",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[". For each of your choices of quantum numbers make a density plot \
+of the hydrogen probability density using the code in Part 2.4. Briefly \
+describe each one. Where is the electron most likely to found? Where is the \
+least likely place to find it? \n\n7. If you increase or decrease the value \
+of the orbital angular momentum ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["l",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[" while keeping the principle quantum number ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["n",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[" and ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ StyleBox["m",
+  Evaluatable->False,
+  AspectRatioFixed->True,
+  FontSlant->"Italic"],
+ StyleBox[" fixed, what happens to the number of high probability density \
+regions in your plot? Your answer should be in the language of spherical \
+coordinates. Print out enough plots to support your assertions.\n\n[1] Code \
+adapted from E.Zeleny, ",
+  Evaluatable->False,
+  AspectRatioFixed->True],
+ "\[OpenCurlyDoubleQuote]Hydrogen Orbital Densities\[CloseCurlyDoubleQuote], \
+http://demonstrations.wolfram.com/HydrogenOrbitalDensities/, Wolfram \
+Demonstrations Project, Published: June 20, 2012."
+}], "Text",
+ Evaluatable->False,
+ CellChangeTimes->CompressedData["
+1:eJxTTMoPSmViYGCQAmIQbf7X79jXrleOV55VgmnWZYuLjva8chTa5NwJovd/
+yF0Aor2efADT257vPg+iV/HeBdMMrInLjwHpV7v3rQTRRYdbtoNop8im/SC6
+vHnKURAtJNR0AkSzTd1yHUR/Ld1/E0Tnypb1HwfSZ+Z0TQXRZQznZ4PoKF+u
+JSBaaHn+KhCd9K1sNYguOGPO9gxI69itBtOVrI94QbT8yUhZEJ2g/1oJRNsd
+qlIB0Q21lzVB9Gy5F2D6WNceXRD9RfoXmJ74oSaLr/eVo+3H/WB6k6LEQSsg
+HfQ4GkxzSGvdBNGzNL/cAtHREkb3QbRI23MwHXc67hVY3TWZXyB66X4NVmsg
+ffrkPk4Q7WzxjxdEMwgWi4DoB9KfckD0o4zwPBAtYfdsphOQ1s9OnwOi0xZK
+3vEH0gUrVz4E0QB4SeJU
+  "],
+ AspectRatioFixed->True]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{973, 716},
+WindowMargins->{{147, Automatic}, {Automatic, -10}},
+PrivateNotebookOptions->{"VersionedStylesheet"->{"Default.nb"[8.] -> False}},
+FrontEndVersion->"10.0 for Linux x86 (64-bit) (September 9, 2014)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 213, 4, 93, "Title",
+ Evaluatable->False],
+Cell[CellGroupData[{
+Cell[818, 30, 80, 2, 65, "Section",
+ Evaluatable->False],
+Cell[901, 34, 798, 20, 71, "Text",
+ Evaluatable->False]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1736, 59, 102, 2, 65, "Section",
+ Evaluatable->False],
+Cell[1841, 63, 166, 5, 31, "Text",
+ Evaluatable->False],
+Cell[CellGroupData[{
+Cell[2032, 72, 88, 2, 45, "Subsection",
+ Evaluatable->False],
+Cell[2123, 76, 366, 9, 110, "Text",
+ Evaluatable->False],
+Cell[2492, 87, 187, 7, 68, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2716, 99, 240, 4, 45, "Subsection",
+ Evaluatable->False],
+Cell[2959, 105, 599, 17, 71, "Text"],
+Cell[3561, 124, 377, 10, 32, "Input"],
+Cell[3941, 136, 538, 13, 55, "Input"],
+Cell[4482, 151, 368, 7, 51, "Text"],
+Cell[CellGroupData[{
+Cell[4875, 162, 2725, 66, 297, "Input"],
+Cell[7603, 230, 491, 10, 32, "Output"],
+Cell[8097, 242, 528, 12, 32, "Output"]
+}, Open  ]],
+Cell[8640, 257, 44, 1, 4, "PageBreak",
+ PageBreakBelow->True]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[8721, 263, 179, 3, 45, "Subsection",
+ Evaluatable->False],
+Cell[8903, 268, 467, 9, 71, "Text",
+ Evaluatable->False],
+Cell[9373, 279, 295, 6, 50, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[9705, 290, 215, 4, 45, "Subsection",
+ Evaluatable->False],
+Cell[9923, 296, 1405, 27, 209, "Text",
+ Evaluatable->False],
+Cell[CellGroupData[{
+Cell[11353, 327, 5390, 129, 395, "Input"],
+Cell[16746, 458, 4565, 89, 631, "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[21372, 554, 144, 3, 65, "Section",
+ Evaluatable->False],
+Cell[21519, 559, 187, 5, 31, "Text",
+ Evaluatable->False],
+Cell[21709, 566, 5897, 209, 405, "Text",
+ Evaluatable->False]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
