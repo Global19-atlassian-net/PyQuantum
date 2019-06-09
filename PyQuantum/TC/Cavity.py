@@ -10,30 +10,33 @@ from PyQuantum.Common.STR import *
 class Cavity:
 
     # ---------------------------------------------------------------------------------------------
-    def __init__(self, n, wc, wa, g):
-        Assert(isinstance(n, int), "n is not integer", cf())
+    def __init__(self, wc, wa, g, n_atoms, n_levels=2):
         Assert(isinstance(wc, (int, float)), "wc is not numeric", cf())
-        # Assert(isinstance(wa, (int, float)), "wa is not numeric", cf())
-        # Assert(isinstance(g, (int, float)), "g is not numeric", cf())
+        Assert(isinstance(wa, (int, float)), "wa is not numeric", cf())
+        Assert(isinstance(g, (int, float)), "g is not numeric", cf())
+        Assert(isinstance(n_atoms, int), "n_atoms is not integer", cf())
 
-        Assert(n > 0, "n <= 0", cf())
         Assert(wc > 0, "wc <= 0", cf())
-        # Assert(wa > 0, "wa <= 0", cf())
-        # Assert(g > 0, "g <= 0", cf())
-
-        self.n = n
+        Assert(wa > 0, "wa <= 0", cf())
+        Assert(g > 0, "g <= 0", cf())
+        Assert(n_atoms > 0, "n <= 0", cf())
 
         self.wc = wc
         self.wa = wa
 
         self.g = g
+
+        self.n_atoms = n_atoms
+        self.n_levels = n_levels
+
     # ---------------------------------------------------------------------------------------------
 
     # ---------------------------------------------------------------------------------------------
-    def print_n(self):
-        print(" n: ", color="yellow")
 
-        print(self.n)
+    def print_n_atoms(self):
+        print(" n_atoms: ", color="yellow")
+
+        print(self.n_atoms)
 
         print()
     # ---------------------------------------------------------------------------------------------
@@ -49,18 +52,18 @@ class Cavity:
 
     # ---------------------------------------------------------------------------------------------
     def print_wa(self):
-        print("wa: ", color="green")
+        print("wa: ", color="yellow")
 
-        print("[" + ", ".join([wa_str(i) for i in self.wa]) + "]")
+        print(wa_str(self.wa))
 
         print()
     # ---------------------------------------------------------------------------------------------
 
     # ---------------------------------------------------------------------------------------------
     def print_g(self):
-        print(" g: ", color="green")
+        print(" g: ", color="yellow")
 
-        print("[" + ", ".join([g_str(i) for i in self.g]) + "]")
+        print(g_str(self.g))
 
         print()
     # ---------------------------------------------------------------------------------------------
@@ -71,12 +74,10 @@ class Cavity:
 
         print()
 
-        self.print_n()
         self.print_wc()
         self.print_wa()
         self.print_g()
-
-        print()
+        self.print_n_atoms()
     # ---------------------------------------------------------------------------------------------
 
 # -------------------------------------------------------------------------------------------------

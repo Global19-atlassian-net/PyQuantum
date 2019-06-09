@@ -92,13 +92,13 @@ def PyPlot3D(title, z_csv, x_csv, y_csv, t_coeff=1, online=True, path=".", filen
 
             size=20,
             color="#222"),
-        margin=go.Margin(
-            l=0,
-            r=0,
-            b=0,
-            t=35,
-            pad=50,
-        ),
+        # margin=go.Margin(
+        #     l=0,
+        #     r=0,
+        #     b=0,
+        #     t=35,
+        #     pad=50,
+        # ),
         xaxis=dict(
             # linecolor="black",
             # linewidth=2,
@@ -215,16 +215,19 @@ def PyPlot3D(title, z_csv, x_csv, y_csv, t_coeff=1, online=True, path=".", filen
         return
 # fig["layout"].update(scene=dict(aspectmode="data"))
 # online=False
+
     if online:
-        py.plot(fig, filename=filename)
+        py.iplot(fig, filename=filename)
         # plotly.offline.init_notebook_mode()
         # plotly.offline.iplot(fig, filename="wt.html")
 
         # plotly.
         # py.offline.iplot(fig, filename="wt")
     else:
+        # plotly.offline.init_notebook_mode(connected=True)
         # plotly.offline.init_notebook_mode()
         plotly.offline.plot(fig, filename=path + filename + ".html")
+        # plotly.offline.iplot(fig, filename=path + filename + ".html")
 
     return
 # ---------------------------------------------------------------------------------------------------------------------

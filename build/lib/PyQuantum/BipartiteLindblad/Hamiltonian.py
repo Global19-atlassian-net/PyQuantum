@@ -11,7 +11,6 @@ import copy
 from PyQuantum.Common.Matrix import *
 from PyQuantum.Common.Assert import *
 from PyQuantum.Common.Print import *
-from PyQuantum.Common.ext import print_error
 # -------------------------------------------------------------------------------------------------
 import html
 import pandas as pd
@@ -117,8 +116,8 @@ class Hamiltonian:
     # ---------------------------------------------------------------------------------------------
 
     # ---------------------------------------------------------------------------------------------
-    def write_to_file(self, filename):
-        self.matrix.write_to_file(filename)
+    def to_csv(self, filename):
+        self.matrix.to_csv(filename)
     # ---------------------------------------------------------------------------------------------
 
     # ---------------------------------------------------------------------------------------------

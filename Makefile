@@ -1,3 +1,6 @@
+tree:
+	@ tree -I '*.csv|*.pyc|*.html|out|__pycache__|old' > edit
+
 setup:
 	@ rm dist/* 2>/dev/null || true;
 	# $('perl -ne 's/(\d+)\.(\d+)\.(\d+)/$1.".".$2.".".(0+$3+1)/e; print $_' -i setup.py');
@@ -41,3 +44,6 @@ bpl:
 tc:
 	python3 run_tc.py
 # -------------------------------------------------------------------------------------------------
+clean:
+	@ find . -type f -name '*.html' -delete
+	@ find . -type f -name '*.csv' -delete

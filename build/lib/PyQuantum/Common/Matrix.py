@@ -1,5 +1,5 @@
 import numpy as np
-from math import floor, sqrt
+import pandas as pd
 from PyQuantum.Common.Assert import *
 from PyQuantum.Common.STR import *
 
@@ -69,7 +69,7 @@ class Matrix:
         print()
 
     # ---------------------------------------------------------------------------------------------
-    def write_to_file(self, filename):
+    def to_csv(self, filename):
         with open(filename, "w") as f:
             for i in range(0, self.m):
                 for j in range(0, self.n):
@@ -113,3 +113,23 @@ class Matrix:
 
         return
     # -------------------------------------------------------------------------------------------------
+
+    def normalize(self):
+        self.data /= np.norm(self.data)
+
+    def iprint(self):
+        df = pd.DataFrame()
+
+        for i in range(self.m):
+            for j in range(self.n):
+                df.loc[i, j] = wc_str(abs(self.data[i, j]))
+
+        # df.index = df.columns = self.states_str
+        df.index = df.columns = [str(v) for v in self.states.values()]
+
+        self.df = df
+
+    def to_html(self, filename):
+        self.iprint()
+
+        self.df.to_html(filename)

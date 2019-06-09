@@ -1,12 +1,13 @@
 # -------------------------------------------------------------------------------------------------
 # system
 import csv
+from math import sqrt
 # -------------------------------------------------------------------------------------------------
 # BipartiteLindblad
 from PyQuantum.BipartiteLindblad.Unitary import *
 # -------------------------------------------------------------------------------------------------
 # Common
-from PyQuantum.Common.ext import *
+from PyQuantum.Common.Tools import *
 from PyQuantum.Common.STR import *
 from PyQuantum.Common.Print import *
 from PyQuantum.Common.Fidelity import *
@@ -140,10 +141,10 @@ def run(ro_0, H, dt, nt, l, config, fidelity_mode=False):
     a = get_a(H, H.capacity, H.n)
     _a = Matrix(H.size, H.size, dtype=np.complex128)
     _a.data = a.data
-    # _a.write_to_file('a')
+    # _a.to_csv('a')
     # print(a)
     # if __debug__:
-    # _a.write_to_file(a_csv)
+    # _a.to_csv(a_csv)
 
     a_cross = a.getH()
     across_a = np.dot(a_cross, a)
@@ -172,12 +173,12 @@ def run(ro_0, H, dt, nt, l, config, fidelity_mode=False):
     # exit(1)
     # print(np.matrix(a))
     # if __debug__:
-    # _a_cross_a.write_to_file(a_cross_a_csv)
+    # _a_cross_a.to_csv(a_cross_a_csv)
     # --------------------------------------------------------
     U = Unitary(H, dt)
 
     # if __debug__:
-    # U.write_to_file(config.U_csv)
+    # U.to_csv(config.U_csv)
 
     U_conj = U.conj()
     # --------------------------------------------------------
@@ -257,7 +258,7 @@ def run(ro_0, H, dt, nt, l, config, fidelity_mode=False):
 
     # ro_0.data = L
     # print("L(t):\n", color="yellow")
-    # ro_0.write_to_file("L")
+    # ro_0.to_csv("L")
     # ro_0.print_pd()
 
     # exit(1)
@@ -267,7 +268,7 @@ def run(ro_0, H, dt, nt, l, config, fidelity_mode=False):
         states[cnt] = (H.states[k])[1:]
         cnt += 1
     print(states)
-    write_x(states, config.x_csv, ind=[[0, H.n], [H.n, 0]])
+    write_xbp(states, config.x_csv, ind=[[0, H.n], [H.n, 0]])
     write_t(T_str_v(config.T), config.nt, config.y_csv)
     # write_t(config.T / config.mks / 1e-2, config.nt, config.y_csv)
     # ----------------------------------------------------------

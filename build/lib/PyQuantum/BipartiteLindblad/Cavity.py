@@ -1,3 +1,5 @@
+# from PyQuantum.TC.Cavity import *
+
 # -------------------------------------------------------------------------------------------------
 # Common
 from PyQuantum.Common.Assert import *
@@ -31,7 +33,7 @@ class Cavity:
 
     # ---------------------------------------------------------------------------------------------
     def print_n(self):
-        print(" n: ", color="green")
+        print(" n: ", color="yellow")
 
         print(self.n)
 
@@ -40,7 +42,7 @@ class Cavity:
 
     # ---------------------------------------------------------------------------------------------
     def print_wc(self):
-        print("wc: ", color="green")
+        print("wc: ", color="yellow")
 
         print(wc_str(self.wc))
 
@@ -49,7 +51,7 @@ class Cavity:
 
     # ---------------------------------------------------------------------------------------------
     def print_wa(self):
-        print("wa: ", color="green")
+        print("wa: ", color="yellow")
 
         print(wa_str(self.wa))
 
@@ -58,7 +60,7 @@ class Cavity:
 
     # ---------------------------------------------------------------------------------------------
     def print_g(self):
-        print(" g: ", color="green")
+        print(" g: ", color="yellow")
 
         print(g_str(self.g))
 
@@ -69,6 +71,7 @@ class Cavity:
     def print(self):
         print("Cavity:", color="green")
 
+        print()
         print()
 
         self.print_n()

@@ -1,3 +1,5 @@
+# from PyQuantum.TC.Cavity import *
+
 # -------------------------------------------------------------------------------------------------
 # Common
 from PyQuantum.Common.Assert import *
@@ -69,6 +71,7 @@ class Cavity:
     def print(self):
         print("Cavity:", color="green")
 
+        print()
         print()
 
         self.print_n()

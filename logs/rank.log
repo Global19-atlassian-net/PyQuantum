@@ -1,0 +1,15 @@
+DEBUG:root:This is a debug message
+INFO:root:Informational message
+INFO:root:[[1, 2, 3], [4, 5, 62]]
+ERROR:root:An error has happened!
+ERROR:root:An error has happened!
+DEBUG:root:Divide row №0
+DEBUG:root:Divide row 6 on 1
+DEBUG:root:Divide row 6{'ind': [7], 'items': [1], 'count': 1} on 1
+DEBUG:root:Divide row 6 {'ind': [7], 'items': [1], 'count': 1} on 1
+DEBUG:root:Divide row 6 {'ind': [7], 'items': [1], 'count': 1} on 1
+DEBUG:root:Divide row 6 {'ind': [7], 'items': [1], 'count': 1} on 1
+DEBUG:root:Divide row 6 {'ind': [7], 'items': [1], 'count': 1} on 1
+DEBUG:root:None
+DEBUG:root:Divide row 6 {'ind': [7], 'items': [1], 'count': 1} on 1
+INFO:root:None

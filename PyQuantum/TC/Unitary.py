@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------------------------------------
-from PyQuantum.TC.Hamiltonian import Hamiltonian
+# from PyQuantum.TC.Hamiltonian import *
 # -------------------------------------------------------------------------------------------------
 # Common
 from PyQuantum.Common.Matrix import *
@@ -15,7 +15,8 @@ class Unitary(Matrix):
 
     # ---------------------------------------------------------------------------------------------
     def __init__(self, H, dt):
-        Assert(isinstance(H, Hamiltonian), "H is not Hamiltonian", cf())
+        # Assert(isinstance(H, Hamiltonian) or isinstance(
+        #     H, HamiltonianL), "H is not Hamiltonian", cf())
         Assert(isinstance(dt, (int, float)), "dt is not numeric", cf())
 
         Assert(dt > 0, "dt <= 0", cf())

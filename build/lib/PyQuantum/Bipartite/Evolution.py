@@ -6,7 +6,7 @@ import csv
 from PyQuantum.Bipartite.Unitary import *
 # -------------------------------------------------------------------------------------------------
 # Common
-from PyQuantum.Common.ext import *
+from PyQuantum.Common.Tools import *
 from PyQuantum.Common.STR import *
 from PyQuantum.Common.Fidelity import *
 # -------------------------------------------------------------------------------------------------
@@ -22,7 +22,7 @@ def run(ro_0, H, dt, nt, config, fidelity_mode=False):
     U = Unitary(H, dt)
 
     if __debug__:
-        U.write_to_file(config.U_csv)
+        U.to_csv(config.U_csv)
 
     U_conj = U.conj()
     # --------------------------------------------------------
@@ -30,8 +30,12 @@ def run(ro_0, H, dt, nt, config, fidelity_mode=False):
         ro_0_sqrt = lg.fractional_matrix_power(ro_0.data, 0.5)
 
         fidelity = []
+    import scipy.sparse as sp
 
-    ro_t = ro_0.data
+    ro_t = sp.csc_matrix(ro_0.data)
+    U_data = sp.csc_matrix(U.data)
+    U_conj_data = sp.csc_matrix(U_conj.data)
+
     # ----------------------------------------------------------------------------
     with open(config.z_csv, "w") as csv_file:
         writer = csv.writer(
@@ -52,7 +56,8 @@ def run(ro_0, H, dt, nt, config, fidelity_mode=False):
 
                 fidelity.append(fidelity_t)
             # --------------------------------------------------------------------
-            ro_t = U.data.dot(ro_t).dot(U_conj)
+            # ro_t = U.data.dot(ro_t).dot(U_conj)
+            ro_t = U_data.dot(ro_t).dot(U_conj_data)
     # ----------------------------------------------------------------------------
     states = H.states
 
@@ -68,12 +73,12 @@ def run(ro_0, H, dt, nt, config, fidelity_mode=False):
 # -------------------------------------------------------------------------------------------------
 
 
-def run_w(w_0, H, dt, nt, config, fidelity_mode=False):
+def run_wf(w_0, H, dt, nt, config, fidelity_mode=False):
     # --------------------------------------------------------
     U = Unitary(H, dt)
 
     if __debug__:
-        U.write_to_file(config.U_csv)
+        U.to_csv(config.U_csv)
 
     U_conj = U.conj()
     # --------------------------------------------------------
@@ -94,9 +99,9 @@ def run_w(w_0, H, dt, nt, config, fidelity_mode=False):
     ind_1 = None
 
     for k, v in H.states.items():
-        if v == [0, H.n]:
+        if v == [0, H.cavity.n]:
             ind_0 = k
-        elif v == [H.n, 0]:
+        elif v == [H.cavity.n, 0]:
             ind_1 = k
 
     with open(config.z_csv, "w") as csv_file:
@@ -146,7 +151,7 @@ def run_w(w_0, H, dt, nt, config, fidelity_mode=False):
     # ----------------------------------------------------------------------------
     states = H.states
 
-    write_x(states, config.x_csv, ind=[[0, H.n], [H.n, 0]])
+    write_xbp(states, config.x_csv, ind=[[0, H.cavity.n], [H.cavity.n, 0]])
     write_t(T_str_v(config.T), config.nt, config.y_csv)
     # ----------------------------------------------------------
     if fidelity_mode:
