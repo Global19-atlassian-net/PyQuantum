@@ -30,6 +30,23 @@ def write_x(states, x_csv, ind_1=None, ind_2=None):
     list_to_csv(x_csv, _x, ["x", "vals"])
 
 
+def write_x_not_ind(states, x_csv):
+    _k = []
+    _v = []
+
+    for k, v in enumerate(states):
+        _k.append(k)
+        _v.append(str(v))
+
+    # exit(1)
+    _x = np.matrix([
+        _v,
+        _k
+    ]).getT()
+
+    list_to_csv(x_csv, _x, ["x", "vals"])
+
+
 def write_xx(states, x_csv):
     _k = [int(k) for k in states.keys()]
     # _v = [str(v) for v in states.values()]

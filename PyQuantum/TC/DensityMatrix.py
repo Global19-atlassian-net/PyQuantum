@@ -16,7 +16,7 @@ class DensityMatrix(Matrix):
 
     # ---------------------------------------------------------------------------------------------
     def __init__(self, wf):
-        Assert(isinstance(wf, WaveFunction), "wf is not WaveFunction", cf())
+        Assert(isinstance(wf, WaveFunction), "wf is not WaveFunction", FILE(), LINE())
 
         super(DensityMatrix, self).__init__(
             m=wf.m, n=wf.m, dtype=np.complex128)
@@ -25,9 +25,10 @@ class DensityMatrix(Matrix):
 
         ro_data = wf_data.dot(wf_data.getH())
 
-        Assert(np.shape(ro_data) == (self.m, self.n), "size mismatch", cf())
+        Assert(np.shape(ro_data) == (self.m, self.n), "size mismatch", FILE(), LINE())
 
-        self.data = np.matrix(ro_data, dtype=np.complex128)
+        self.data = ro_data
+        # self.data = np.matrix(ro_data, dtype=np.complex128)
 
         self.states = wf.states
         self.size = np.shape(self.data)[0]
@@ -45,3 +46,20 @@ class DensityMatrix(Matrix):
 
         self.df = df
 # -------------------------------------------------------------------------------------------------
+
+    def normalize(self):
+        self.data = (self.data+self.data.getH())/2.0
+        self.data /= np.sum(np.abs(self.data.diagonal()))
+
+    def energy(self, capacity, n_atoms, states_bin, diag_abs):
+        energy = [0] * (capacity + n_atoms+1)
+
+        for i in range(1, len(states_bin)):
+            energy[i] += np.sum(diag_abs[states_bin[i]])
+            # for j in states_bin[i]:
+            #     energy[i] += diag_abs[j]
+            energy[i] *= i
+
+        # for i in range(1, len(states_bin)):
+
+        return energy

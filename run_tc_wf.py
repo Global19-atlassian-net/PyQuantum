@@ -12,12 +12,14 @@ from PyQuantum.Common.LoadPackage import *
 from PyQuantum.Common.STR import *
 
 from PyQuantum.Common.Tools import mkdir
-from PyQuantum.Common.Print import *
-from PyQuantum.TC.PlotBuilder3D import PlotBuilder3D
+from PyQuantum.Tools.Print import *
+from PyQuantum.Tools.PlotBuilder3D import *
+# from PyQuantum.TC.PlotBuilder3D import PlotBuilder3D
 # from PyQuantum.Common.PyPlot import PyPlot3D
 
 # from shutil import copyfile
 # from numpy.random import rand
+from PyQuantum.Tools.Hz import *
 # -------------------------------------------------------------------------------------------------
 import argparse
 
@@ -42,13 +44,13 @@ cavity = Cavity(
     n_levels=config.n_levels
 )
 
-cavity.print()
+cavity.info()
 # -------------------------------------------------------------------------------------------------
 H = Hamiltonian(
     capacity=config.capacity,
     cavity=cavity,
     RWA=True,
-    reduced=True
+    # reduced=True
 )
 
 # H.iprint()
@@ -59,20 +61,15 @@ w_0 = WaveFunction(states=H.states, init_state=config.init_state)
 
 w_0.print()
 # -------------------------------------------------------------------------------------------------
-run_wf(
-    w_0=w_0,
-    H=H,
-    dt=config.dt,
-    nt=config.nt,
-    config=config,
-    fidelity_mode=True
-)
+# run_wf(
+#     w_0=w_0,
+#     H=H,
+#     dt=config.dt,
+#     nt=config.nt,
+#     config=config,
+#     fidelity_mode=False
+# )
 # -------------------------------------------------------------------------------------------------
-plt = PlotBuilder3D()
-
-plt.set_width(950)
-plt.set_height(800)
-
 title = ""
 
 if config.capacity - config.n_atoms > 0:
@@ -85,14 +82,14 @@ title += "<b>"
 title += "n_atoms = " + str(config.n_atoms)
 
 title += "<br>"
-title += "<br>w<sub>c</sub> = " + wc_str(config.wc)
-title += "<br>w<sub>a</sub> = " + wa_str(config.wa)
-title += "<br><br> g/hw<sub>c</sub> = " + str(config.g/config.wc)
+
+title += "<br>w<sub>c</sub> = " + to_Hz(config.wc)
+title += "<br>w<sub>a</sub> = " + to_Hz(config.wa)
+title += "<br><br> g/hw<sub>c</sub> = " + str(np.round(config.g/config.wc, 3))
+
 title += "<br>"
 title += "<br>"
 title += "</b>"
-
-plt.set_title(title)
 
 y_scale = 1
 
@@ -108,15 +105,28 @@ elif config.T == 1 * config.mks:
 elif config.T == 5 * config.mks:
     y_scale = 1
 
-plt.set_yscale(y_scale)
 
-plt.set_xaxis("states")
-plt.set_yaxis("time, " + T_str_mark(config.T))
-plt.set_zaxis("prob.\t\t\t\t\t\t.")
+plot_builder = PlotBuilder3D({
+    'title': title,
 
-plt.plot(
-    x_csv=config.x_csv,
-    y_csv=config.y_csv,
-    z_csv=config.z_csv,
-    filename="tc_wf"
-)
+    'x_title': 'states',
+    'y_title': 'time, ' + T_str_mark(config.T),
+    'z_title': 'prob.\t\t\t\t\t\t.',
+
+    'y_scale': y_scale,
+
+    'width': 950,
+    'height': 800,
+
+    'x_csv': config.x_csv,
+    'y_csv': config.y_csv,
+    'z_csv': config.z_csv,
+
+    'x_range': [0, 1],
+    'y_range': [0, 1],
+    'z_range': [0, 1],
+
+    # 't_coeff': t_coeff,
+})
+
+plot_builder.plot(online='False', path='', filename='1.html')

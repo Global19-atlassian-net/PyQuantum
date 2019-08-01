@@ -13,6 +13,7 @@ from PyQuantum.Common.STR import *
 from PyQuantum.Common.LoadPackage import *
 
 from PyQuantum.Common.Tools import mkdir
+from PyQuantum.Tools import Hz
 from PyQuantum.Common.PlotBuilder3D import *
 
 from shutil import copyfile
@@ -89,9 +90,9 @@ if not __debug__ or __debug__:
             " photons in cavity"
     title += "<br>atoms state: " + str(config.init_state)
     title += "<br>"
-    title += "<br>w<sub>c</sub> = " + wc_str(config.wc)
-    title += "<br>w<sub>a</sub> = " + wc_str(config.wa)
-    title += "<br>g</sub> = " + wc_str(config.g)
+    title += "<br>w<sub>c</sub> = " + Hz(config.wc)
+    title += "<br>w<sub>a</sub> = " + Hz(config.wa)
+    title += "<br>g</sub> = " + Hz(config.g)
     title += "</b>"
 
     plt.set_title(title)
@@ -137,7 +138,7 @@ if not __debug__ or __debug__:
 #         # title += "<br>init. state: " + str(config.init_state)
 #         # # title += "<br>t = " + T_str(config.T)
 #         # title += "<br>"
-#         # title += "<br>w<sub>c</sub> = " + wc_str(config.wc)
+#         # title += "<br>w<sub>c</sub> = " + Hz(config.wc)
 #         # title += "<br>w<sub>a</sub> = " + wa_str(config.wa)
 #         # title += "<br>g = " + g_str(config.g)
 #         # title += "</span>"
@@ -184,7 +185,7 @@ if not __debug__ or __debug__:
 #         # title += "<br>init. state: " + str(config.init_state)
 #         # # title += "<br>t = " + T_str(config.T)
 #         # title += "<br>"
-#         # title += "<br>w<sub>c</sub> = " + wc_str(config.wc)
+#         # title += "<br>w<sub>c</sub> = " + Hz(config.wc)
 #         # title += "<br>w<sub>a</sub> = " + wa_str(config.wa)
 #         # title += "<br>g = " + g_str(config.g)
 #         # title += "</span>"
@@ -223,7 +224,7 @@ if not __debug__ or __debug__:
 #     title = "<b>"
 #     title += "capacity = " + str(config.capacity) + ", n = " + str(config.n)
 
-#     title += "<br>w<sub>c</sub> = " + wc_str(config.wc)
+#     title += "<br>w<sub>c</sub> = " + Hz(config.wc)
 #     title += "<br>w<sub>a</sub> = " + \
 #         "[" + ", ".join([wa_str(i) for i in config.wa]) + "]"
 #     title += "<br>g = " + "[" + ", ".join([g_str(i) for i in config.g]) + "]"

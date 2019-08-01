@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
-from PyQuantum.Common.Assert import *
+from PyQuantum.Tools.Assert import *
 from PyQuantum.Common.STR import *
+from scipy.sparse import lil_matrix, csc_matrix
 
 precision = 5
 eps = 1.0 / (10 ** precision)
@@ -11,23 +12,36 @@ class Matrix:
     # ---------------------------------------------------------------------------------------------
 
     def __init__(self, m, n, dtype):
-        Assert(m > 0, "m <= 0", cf())
-        Assert(n > 0, "n <= 0", cf())
+        Assert(m > 0, "m <= 0", FILE(), LINE())
+        Assert(n > 0, "n <= 0", FILE(), LINE())
 
         self.m = m
         self.n = n
 
         self.dtype = dtype
 
-        self.data = np.matrix(
-            np.zeros([m, n]),
-            dtype=dtype
-        )
+        self.data = lil_matrix((m, n), dtype=dtype)
+
+        # self.data = np.matrix(
+        #     np.zeros([m, n]),
+        #     dtype=dtype
+        # )
     # ---------------------------------------------------------------------------------------------
 
+    def print(self, precision=3):
+        for i in range(self.m):
+            for j in range(self.n):
+                print(np.round(abs(self.data[i, j]), precision), end='\t')
+                # print(np.round(abs((config.l * L)[i, j]), 3), end='\t')
+
+            print()
     # ---------------------------------------------------------------------------------------------
+
     def conj(self):
-        return self.data.getH()
+        conj_matrix = Matrix(m=self.m, n=self.n, dtype=self.dtype)
+        conj_matrix.data = self.data.getH()
+
+        return conj_matrix
     # ---------------------------------------------------------------------------------------------
 
     def is_hermitian(self):
@@ -35,12 +49,14 @@ class Matrix:
     # ---------------------------------------------------------------------------------------------
 
     def check_hermiticity(ro):
-        Assert(self.is_hermitian(), "not hermitian", cf())
+        Assert(self.is_hermitian(), "not hermitian", FILE(), LINE())
     # ---------------------------------------------------------------------------------------------
 
+    def abs_trace(self):
+        return np.sum(np.abs(self.data.diagonal()))
     # ---------------------------------------------------------------------------------------------
-    def print(self):
-        print(self.data)
+    # def print(self):
+    #     print(self.data)
 
         return
     # ---------------------------------------------------------------------------------------------
@@ -117,7 +133,7 @@ class Matrix:
     # ---------------------------------------------------------------------------------------------
     def check_hermiticity(self):
         Assert(np.all(abs(self.data - self.data.getH()) < eps),
-               "matrix is not hermitian", cf())
+               "matrix is not hermitian", FILE(), LINE())
     # ---------------------------------------------------------------------------------------------
 
     # -------------------------------------------------------------------------------------------------
@@ -128,7 +144,7 @@ class Matrix:
         I = np.eye(len(data))
 
         Assert(np.all(abs(data.dot(data_H) - I) < eps)
-               and np.all(abs(data_H.dot(data) - I) < eps), "matrix is not unitary", cf())
+               and np.all(abs(data_H.dot(data) - I) < eps), "matrix is not unitary", FILE(), LINE())
 
         return
     # -------------------------------------------------------------------------------------------------

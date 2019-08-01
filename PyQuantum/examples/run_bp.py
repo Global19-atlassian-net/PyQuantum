@@ -43,7 +43,7 @@ if __debug__:
 
     H.print_states()
 
-    H.write_to_file(filename=config.H_csv)
+    # H.write_to_file(filename=config.H_csv)
     # H.print_html(filename=H_html)
 # -------------------------------------------------------------------------------------------------
 w_0 = WaveFunction(states=H.states, init_state=config.init_state)

@@ -2,365 +2,237 @@ import numpy as np
 import pandas as pd
 
 from PyQuantum.Common.Matrix import *
-from PyQuantum.TC.FullBase import *
-from PyQuantum.TC.HamiltonianFull import Hamiltonian as H_Full
+from PyQuantum.Tools.Hz import *
+from PyQuantum.TC.Basis import Basis
+from scipy.sparse import identity, kron
 
 
-class HamiltonianL:
-    def set_base(self, base):
-        self.base = base
-
-    def __init__(self, capacity, cavity, RWA=True, reduced=True):
+class Hamiltonian(Matrix):
+    def __init__(self, capacity, cavity, RWA=True):
         self.capacity = capacity
         self.cavity = cavity
 
-        self.size = 0
+        basis = Basis(capacity, cavity.n_atoms, cavity.n_levels)
 
-        HC = {}
+        self.states = basis.basis
 
-        size_start = 0
+        # self.print_states()
+        # -------------------------------------------------------------------------------------------------------------
+        H_field = self.get_Hfield(capacity, cavity.n_atoms, cavity.n_levels, cavity.wc, cavity.wa, cavity.g)
 
-        self.states = {}
-
-        for c in range(capacity, -1, -1):
-            Hc = Hamiltonian(capacity=c, cavity=cavity,
-                             RWA=RWA, reduced=reduced)
-            HC[c] = Hc
-
-            for i in Hc.base.base:
-                # for i in Hc.states.values():
-                print(i)
-            print()
-            for k, v in Hc.states.items():
-                self.states[size_start + k] = v
-
-            size_start += HC[c].size
-            # self.states += Hc.states
-            # print(Hc.states)
-            self.size += Hc.size
-
-        # for i in self.states.values():
-        #     print(i)
-
-        I = np.zeros([self.size, self.size], dtype=np.complex128)
-        # print(self.states)
-
-        size_start = 0
-
-        for c in range(capacity, -1, -1):
-            # print("c=", c)
-            # print(HC[c])
-            # print(HC[c].size)
-            # print(HC[c].states)
-            # print(HC[c].matrix.data)
-            I[size_start:size_start+HC[c].size,
-                size_start:size_start+HC[c].size] = HC[c].matrix.data
-            size_start += HC[c].size
-
-        self.matrix = Matrix(self.size, self.size, dtype=np.complex128)
-        self.matrix.data = I
-
-    def iprint(self):
-        df = pd.DataFrame()
-
-        for i in range(self.size):
-            for j in range(self.size):
-                df.loc[i, j] = wc_str(abs(self.matrix.data[i, j]))
-
-        # df.index = df.columns = self.states_str
-        df.index = df.columns = [str(v) for v in self.states.values()]
-
-        self.df = df
-        # print(I)
-        # exit(0)
-        # for c in range(capacity):
-        #     I[0:size_1, 0:size_1] = H0
-
-        #     I[size_1:size_1+size_2, size_1:size_1+size_2] = H1
-
-        #     I[size_1+size_2:size, size_1+size_2:size] = H2
-
-        # self.matrix = Matrix(self.size, self.size, dtype=np.complex128)
-
-        # H2 = Hamiltonian(capacity-1, cavity, RWA, reduced).matrix.data
-        # H3 = Hamiltonian(capacity-2, cavity, RWA, reduced).matrix.data
-
-        # print(self.size)
-        # H_field = get_Hfield(capacity, cavity.n_atoms, cavity.n_levels,
-        #                      cavity.wc, cavity.wa, cavity.g)
-
-        # H_atoms = get_Hatoms(capacity, cavity.n_atoms, cavity.n_levels,
-        #                      cavity.wc, cavity.wa, cavity.g)
-
-        # if RWA:
-        #     H_int = get_Hint_RWA(
-        #         capacity, cavity.n_atoms, cavity.n_levels, cavity.wc, cavity.wa, cavity.g)
-        # else:
-        #     H_int = get_Hint_EXACT(
-        #         capacity, cavity.n_atoms, cavity.n_levels, cavity.wc, cavity.wa, cavity.g)
-
-        # Assert(np.shape(H_field) == np.shape(H_atoms), "size mismatch", cf())
-        # Assert(np.shape(H_atoms) == np.shape(H_int), "size mismatch", cf())
-
-        # H = np.matrix(H_field + H_atoms + H_int)
-
-        # self.size = np.shape(H)[0]
-
-        # self.matrix = Matrix(self.size, self.size, dtype=np.complex128)
-        # self.matrix.data = H
-
-        # at = AtomicBasis(count=cavity.n_atoms, n_levels=cavity.n_levels)
-        # base = Base(capacity, at)
-
-        # self.set_base(base)
-
-        # if reduced:
-        #     self.reduce()
-
-        # print(self.matrix.data)
-
-        # exit(1)
-
-        # self.set_states()
-
-
-class Hamiltonian:
-    def set_base(self, base):
-        self.base = base
-
-    def __init__(self, capacity, cavity, RWA=True, reduced=True):
-        self.capacity = capacity
-        self.cavity = cavity
-
-        H_field = get_Hfield(capacity, cavity.n_atoms, cavity.n_levels,
-                             cavity.wc, cavity.wa, cavity.g)
-
-        H_atoms = get_Hatoms(capacity, cavity.n_atoms, cavity.n_levels,
-                             cavity.wc, cavity.wa, cavity.g)
+        H_atoms = self.get_Hatoms(capacity, cavity.n_atoms, cavity.n_levels, cavity.wc, cavity.wa, cavity.g)
 
         if RWA:
-            H_int = get_Hint_RWA(
-                capacity, cavity.n_atoms, cavity.n_levels, cavity.wc, cavity.wa, cavity.g)
+            H_int = self.get_Hint_RWA(capacity, cavity.n_atoms, cavity.n_levels, cavity.wc, cavity.wa, cavity.g)
         else:
-            H_int = get_Hint_EXACT(
-                capacity, cavity.n_atoms, cavity.n_levels, cavity.wc, cavity.wa, cavity.g)
+            H_int = self.get_Hint_EXACT(capacity, cavity.n_atoms, cavity.n_levels, cavity.wc, cavity.wa, cavity.g)
 
-        Assert(np.shape(H_field) == np.shape(H_atoms), "size mismatch", cf())
-        Assert(np.shape(H_atoms) == np.shape(H_int), "size mismatch", cf())
+        Assert(np.shape(H_field) == np.shape(H_atoms), "size mismatch", FILE(), LINE())
+        Assert(np.shape(H_atoms) == np.shape(H_int), "size mismatch", FILE(), LINE())
 
-        H = np.matrix(H_field + H_atoms + H_int)
+        H = H_field + H_atoms + H_int
 
         self.size = np.shape(H)[0]
 
-        self.matrix = Matrix(self.size, self.size, dtype=np.complex128)
-        self.matrix.data = H
+        # print(self.size, len(self.states))
 
-        at = AtomicBasis(count=cavity.n_atoms, n_levels=cavity.n_levels)
-        base = Base(capacity, at)
+        Assert(self.size == len(self.states), "size mismatch", FILE(), LINE())
 
-        self.set_base(base)
+        super(Hamiltonian, self).__init__(m=self.size, n=self.size, dtype=np.longdouble)
 
-        if reduced:
-            self.reduce()
+        self.data = H
 
-        # print(self.matrix.data)
+        self.get_states_bin()
 
-        # exit(1)
+    def get_states_bin(self):
+        states_bin = {}
 
-        self.set_states()
-        print(self.states)
-        self.to_html("H.html")
+        for k, v in enumerate(self.states):
+            en = v[0] + np.sum(v[1])
 
-        H = H_Full(capacity, cavity)
-        # print("dsf")
-        # exit(0)
-        print(6)
-        if np.any(H.matrix.data != self.matrix.data):
-            print("Not equal")
-            H.to_html("H1.html")
-            # H.to_csv("H1.csv")
-            print(H.matrix.data)
-            print(self.matrix.data)
+            if en not in states_bin:
+                states_bin[en] = []
 
-            exit(0)
+            states_bin[en].append(k)
 
-    # ---------------------------------------------------------------------------------------------
+        self.states_bin = states_bin
 
-    # -------------------------------------------------------------------------------------------------
-    def to_csv(self, filename):
-        self.matrix.to_csv(filename)
+    def get_Hfield(self, capacity, at_count, n_levels, wc, wa, g):
+        # ------------------------------------------------------------------------------------------------------------------
+        adiag = np.sqrt(np.arange(1, capacity+1))
 
-        return
-    # -------------------------------------------------------------------------------------------------
+        across = np.diagflat(adiag, -1)
+        a = np.diagflat(adiag, 1)
+        acrossa = np.dot(across, a)
+        # ------------------------------------------------------------------------------------------------------------------
+        H_dim = (capacity+1) * pow(n_levels, at_count)
+        # ------------------------------------------------------------------------------------------------------------------
+        # at_dim = pow(2, at_count)
+        at_dim = pow(n_levels, at_count)
 
-    def iprint(self):
-        df = pd.DataFrame()
+        I_at = identity(at_dim)
+        # ------------------------------------------------------------------------------------------------------------------
+        H_field = wc * kron(acrossa, I_at)
+        # ------------------------------------------------------------------------------------------------------------------
+        return H_field
 
+    def get_Hatoms(self, capacity, at_count, n_levels, wc, wa, g):
+        # ------------------------------------------------------------------------------------------------------------------
+        sigmadiag = range(1, n_levels)
+        sigmacross = np.diagflat(sigmadiag, -1)
+        sigma = np.diagflat(sigmadiag, 1)
+        sigmacrosssigma = np.dot(sigmacross, sigma)
+        # ------------------------------------------------------------------------------------------------------------------
+        ph_dim = capacity+1
+
+        I_ph = np.identity(ph_dim)
+        # ------------------------------------------------------------------------------------------------------------------
+        H_dim = (capacity+1) * pow(n_levels, at_count)
+
+        H_atoms = np.zeros([H_dim, H_dim])
+        # ------------------------------------------------------------------------------------------------------------------
+        for i in range(1, at_count+1):
+            elem = sigmacrosssigma
+
+            at_prev = identity(pow(n_levels, i-1))
+            elem = kron(at_prev, elem)
+
+            at_next = identity(pow(n_levels, at_count-i))
+            elem = kron(elem, at_next)
+
+            H_atoms += wa * kron(I_ph, elem)
+        # ------------------------------------------------------------------------------------------------------------------
+        return H_atoms
+
+    def get_Hint_RWA(self, capacity, at_count, n_levels, wc, wa, g):
+        # ------------------------------------------------------------------------------------------------------------------
+        adiag = np.sqrt(np.arange(1, capacity+1))
+
+        across = np.diagflat(adiag, -1)
+        a = np.diagflat(adiag, 1)
+        acrossa = np.dot(across, a)
+        # ------------------------------------------------------------------------------------------------------------------
+        sigmadiag = range(1, n_levels)
+
+        sigmacross = np.diagflat(sigmadiag, -1)
+        sigma = np.diagflat(sigmadiag, 1)
+        sigmacrosssigma = np.dot(sigmacross, sigma)
+        # ------------------------------------------------------------------------------------------------------------------
+        H_dim = (capacity+1) * pow(n_levels, at_count)
+
+        H_int = np.zeros([H_dim, H_dim])
+        # ------------------------------------------------------------------------------------------------------------------
+        for i in range(1, at_count+1):
+            # ------------------------------------------------
+            elem = across
+
+            before = identity(pow(n_levels, i-1))
+            elem = kron(elem, before)
+
+            elem = kron(elem, sigma)
+
+            after = identity(pow(n_levels, at_count-i))
+            elem = kron(elem, after)
+
+            H_int += g * elem
+            # ------------------------------------------------
+            elem = a
+
+            before = identity(pow(n_levels, i-1))
+            elem = kron(elem, before)
+
+            elem = kron(elem, sigmacross)
+
+            after = identity(pow(n_levels, at_count-i))
+            elem = kron(elem, after)
+
+            H_int += g * elem
+            # ------------------------------------------------
+        # ------------------------------------------------------------------------------------------------------------------
+        return H_int
+
+    # -----------------------------------------------------------------------------------------------------------------
+    def print_states(self):
+        print("Basis:\n", color="green")
+
+        for i in self.states:
+            print(i)
+
+        print()
+    # -----------------------------------------------------------------------------------------------------------------
+
+    def print(self):
         for i in range(self.size):
             for j in range(self.size):
-                df.loc[i, j] = wc_str(abs(self.matrix.data[i, j]))
+                print(round(self.data[i, j] / self.cavity.wc, 3), end='\t')
+                # print(to_Hz(self.data[i, j]), end='\t')
 
-        # df.index = df.columns = self.states_str
-        df.index = df.columns = self.states
-        print(self.states)
-        # df.index = df.columns = self.base.base_str
+            print()
 
-        self.df = df
+# =====================================================================================================================
+# class Hamiltonian:
+#     def __init__(self, capacity, cavity, RWA=True, reduced=True):
+#         self.capacity = capacity
+#         self.cavity = cavity
 
-    def to_html(self, filename):
-        self.matrix.states = self.states
-        print(self.matrix.data)
-        print(self.matrix.m, self.matrix.n)
-        self.matrix.to_html(filename)
+#         self.size = 0
 
-    # ---------------------------------------------------------------------------------------------
+#         HC = {}
 
-    def reduce(self):
-        for k, v in list(enumerate(self.base.base))[::-1]:
-            if v[0] + np.sum(v[1]) != self.capacity:
-                self.matrix.data = np.delete(self.matrix.data, k, axis=0)
-                self.matrix.data = np.delete(self.matrix.data, k, axis=1)
-                self.base.base.remove(v)
-                self.base.base_str.remove(str(v))
+#         size_start = 0
 
-        self.size = np.shape(self.matrix.data)[0]
-        self.matrix.m = self.matrix.n = self.size
+#         self.states = {}
+#         self.states_dim = []
 
-    def set_states(self):
-        self.states = {}
+#         for c in range(capacity, -1, -1):
+#             print("c=", c)
+#             Hc = H(capacity=c, cavity=cavity,
+#                    RWA=RWA, reduced=reduced)
+#             HC[c] = Hc
+#             self.states_dim.append(len(Hc.states))
+#             # print(Hc.states)
+#             for k, v in Hc.states.items():
+#                 self.states[size_start + k] = v
 
-        for k, v in enumerate(self.base.base):
-            self.states[k] = v
+#             size_start += HC[c].size
 
+#             self.size += Hc.size
 
-def get_Hfield(capacity, at_count, n_levels, wc, wa, g):
-    # ------------------------------------------------------------------------------------------------------------------
-    adiag = np.sqrt(np.arange(1, capacity+1))
+#         # self.print_states()
+#         # return
+#         I = lil_matrix((self.size, self.size), dtype=np.double)
+#         # I = np.zeros([self.size, self.size], dtype=np.double)
 
-    across = np.diagflat(adiag, -1)
-    a = np.diagflat(adiag, 1)
-    acrossa = np.dot(across, a)
-    # ------------------------------------------------------------------------------------------------------------------
-    H_dim = (capacity+1) * pow(n_levels, at_count)
-    # ------------------------------------------------------------------------------------------------------------------
-    # at_dim = pow(2, at_count)
-    at_dim = pow(n_levels, at_count)
+#         size_start = 0
 
-    I_at = np.identity(at_dim)
-    # ------------------------------------------------------------------------------------------------------------------
-    H_field = wc * np.kron(acrossa, I_at)
-    # ------------------------------------------------------------------------------------------------------------------
-    return H_field
+#         for c in range(capacity, -1, -1):
+#             I[size_start:size_start+HC[c].size,
+#                 size_start:size_start+HC[c].size] = HC[c].matrix.data
+#             size_start += HC[c].size
 
+#         self.matrix = Matrix(self.size, self.size, dtype=np.double)
+#         self.matrix.data = I
+#         print("H done ...")
 
-def get_Hatoms(capacity, at_count, n_levels, wc, wa, g):
-    # ------------------------------------------------------------------------------------------------------------------
-    sigmadiag = range(1, n_levels)
-    sigmacross = np.diagflat(sigmadiag, -1)
-    sigma = np.diagflat(sigmadiag, 1)
-    sigmacrosssigma = np.dot(sigmacross, sigma)
-    # ------------------------------------------------------------------------------------------------------------------
-    ph_dim = capacity+1
+#     def print_states(self):
+#         for k, v in self.states.items():
+#             print(k, ": ", v, sep="")
 
-    I_ph = np.identity(ph_dim)
-    # ------------------------------------------------------------------------------------------------------------------
-    H_dim = (capacity+1) * pow(n_levels, at_count)
+#     # def iprint(self):
+#     # #     df = pd.DataFrame()
 
-    H_atoms = np.zeros([H_dim, H_dim])
-    # ------------------------------------------------------------------------------------------------------------------
-    for i in range(1, at_count+1):
-        elem = sigmacrosssigma
+#     # #     for i in range(self.size):
+#     # #         for j in range(self.size):
+#     # #             df.loc[i, j] = wc_str(abs(self.matrix.data[i, j]))
 
-        at_prev = np.identity(pow(n_levels, i-1))
-        elem = np.kron(at_prev, elem)
+#     # #     # df.index = df.columns = self.states_str
+#     # #     df.index = df.columns = [str(v) for v in self.states.values()]
 
-        at_next = np.identity(pow(n_levels, at_count-i))
-        elem = np.kron(elem, at_next)
+#     # #     self.df = df
 
-        H_atoms += wa * np.kron(I_ph, elem)
-    # ------------------------------------------------------------------------------------------------------------------
-    return H_atoms
+#     def to_html(self, filename):
+#         self.matrix.states = self.states
+#         self.matrix.to_html(filename)
 
-
-def get_Hint_RWA(capacity, at_count, n_levels, wc, wa, g):
-    # ------------------------------------------------------------------------------------------------------------------
-    adiag = np.sqrt(np.arange(1, capacity+1))
-
-    across = np.diagflat(adiag, -1)
-    a = np.diagflat(adiag, 1)
-    acrossa = np.dot(across, a)
-    # ------------------------------------------------------------------------------------------------------------------
-    sigmadiag = range(1, n_levels)
-
-    sigmacross = np.diagflat(sigmadiag, -1)
-    sigma = np.diagflat(sigmadiag, 1)
-    sigmacrosssigma = np.dot(sigmacross, sigma)
-    # ------------------------------------------------------------------------------------------------------------------
-    H_dim = (capacity+1) * pow(n_levels, at_count)
-
-    H_int = np.zeros([H_dim, H_dim])
-    # ------------------------------------------------------------------------------------------------------------------
-    for i in range(1, at_count+1):
-        # ------------------------------------------------
-        elem = across
-
-        before = np.identity(pow(n_levels, i-1))
-        elem = np.kron(elem, before)
-
-        elem = np.kron(elem, sigma)
-
-        after = np.identity(pow(n_levels, at_count-i))
-        elem = np.kron(elem, after)
-
-        H_int += g * elem
-        # ------------------------------------------------
-        elem = a
-
-        before = np.identity(pow(n_levels, i-1))
-        elem = np.kron(elem, before)
-
-        elem = np.kron(elem, sigmacross)
-
-        after = np.identity(pow(n_levels, at_count-i))
-        elem = np.kron(elem, after)
-
-        H_int += g * elem
-        # ------------------------------------------------
-    # ------------------------------------------------------------------------------------------------------------------
-    return H_int
-
-
-def get_Hint_EXACT(capacity, at_count, n_levels, wc, wa, g):
-    # ------------------------------------------------------------------------------------------------------------------
-    adiag = np.sqrt(np.arange(1, capacity+1))
-
-    across = np.diagflat(adiag, -1)
-    a = np.diagflat(adiag, 1)
-    acrossa = np.dot(across, a)
-    # ------------------------------------------------------------------------------------------------------------------
-    sigmadiag = range(1, n_levels)
-
-    sigmacross = np.diagflat(sigmadiag, -1)
-    sigma = np.diagflat(sigmadiag, 1)
-    sigmacrosssigma = np.dot(sigmacross, sigma)
-    # ------------------------------------------------------------------------------------------------------------------
-    H_dim = (capacity+1) * pow(n_levels, at_count)
-
-    H_int = np.zeros([H_dim, H_dim], dtype=complex)
-    # ------------------------------------------------------------------------------------------------------------------
-    for i in range(1, at_count+1):
-        # ------------------------------------------------
-        elem = (across + a)
-
-        before = np.identity(pow(n_levels, i-1))
-        elem = np.kron(elem, before)
-
-        elem = np.kron(elem, sigmacross + sigma)
-
-        after = np.identity(pow(n_levels, at_count-i))
-        elem = np.kron(elem, after)
-
-        H_int += g * elem
-        # ------------------------------------------------
-    # ------------------------------------------------------------------------------------------------------------------
-    return H_int
+#     #     self.df.to_html(filename)
+# =====================================================================================================================
