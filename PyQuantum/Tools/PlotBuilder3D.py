@@ -26,7 +26,7 @@ class PlotBuilderData3D:
             'width', 'height',
             'ticks',
         ]:
-            Assert(i in args, i + ' not in args', FILE(), LINE())
+            Assert(i in args, i + ' not in args')
 
             self.title = args['title']
 
@@ -372,7 +372,7 @@ class PlotBuilderData3D:
     #             'width', 'height',
     #             'y_scale',
     #         ]:
-    #             Assert(i in args, i + ' not in args', FILE(), LINE())
+    #             Assert(i in args, i + ' not in args')
 
     #         self.title = args['title']
 

@@ -2,7 +2,7 @@ import pathlib
 from setuptools import setup, find_packages
 
 PROJECT_NAME = "PyQuantum"
-PROJECT_VERSION = "1.0.53"
+PROJECT_VERSION = "1.0.60"
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
@@ -33,8 +33,9 @@ setup(
         PROJECT_NAME+'.BipartiteGeneralLindblad',
         PROJECT_NAME+'.BipartiteLindblad',
         PROJECT_NAME+'.Common',
-        PROJECT_NAME+'.TC',
-        PROJECT_NAME+'.TCL',
+        PROJECT_NAME+'.Tools',
+        # PROJECT_NAME+'.TC',
+        # PROJECT_NAME+'.TCL',
         PROJECT_NAME+'.examples.Bipartite',
         PROJECT_NAME+'.examples.BipartiteLindblad',
         PROJECT_NAME+'.examples.TC',

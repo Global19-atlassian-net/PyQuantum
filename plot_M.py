@@ -3,6 +3,7 @@ from PyQuantum.Tools.Assert import *
 import plotly.graph_objs as go
 import numpy as np
 from PyQuantum.Tools.PlotBuilder2D import *
+from PyQuantum.Tools.Pickle import *
 
 
 def df2(x, y):
@@ -24,14 +25,16 @@ data = []
 
 M_str = ''
 
+path = 'sink/1ms_l10g'
+
 for w_0 in [
     {
-        'name': 's_2',
+        'name': 's2',
         'title': '|s<sub>2</sub>〉',
         # 'obj': s_2,
     },
     {
-        'name': 't_0',
+        'name': 't0',
         'title': '|t<sub>0</sub>〉',
         # 'obj': t_0,
     }
@@ -48,7 +51,8 @@ for w_0 in [
     gamma_list = list(np.arange(4.0, 6.0, 1.0))
     # gamma_list = list(np.arange(0.01, 1.01, 0.01)) + list(np.arange(2.0, 5.0, 1.0))
 
-    gamma_list = np.round(gamma_list, 3)
+    gamma_list = [1]
+    # gamma_list = np.round(gamma_list, 3)
 
     print(gamma_list)
 
@@ -62,10 +66,12 @@ for w_0 in [
         # for coeff in np.arange(0.01, 1.01, 0.01):
         # coeff = np.round(coeff, 3)
 
-        T_list = list_from_csv('MM/M_' + str(coeff) + '/T_' + w_0['name'] + '.csv')
+        T_list = pickle_load(path+'/T_list_' + w_0['name'] + '.pkl')
+        # T_list = list_from_csv('MM/M_' + str(coeff) + '/T_' + w_0['name'] + '.csv')
         T_list = np.array(T_list, dtype=np.float64)
 
-        sink_list = list_from_csv('MM/M_' + str(coeff) + '/sink_' + w_0['name'] + '.csv')
+        sink_list = pickle_load(path+'/sink_list_' + w_0['name'] + '.pkl')
+        # sink_list = list_from_csv('MM/M_' + str(coeff) + '/sink_' + w_0['name'] + '.csv')
         sink_list = np.array(sink_list, dtype=np.float64)
 
         sink_list /= np.sum(sink_list, dtype=np.float64)
@@ -114,7 +120,7 @@ for w_0 in [
     ))
 
 print("OK")
-exit(0)
+# exit(0)
 
 plot_builder = PlotBuilder2D({
     'title': 'M[p<sub>sink</sub>] (t)',
@@ -128,6 +134,7 @@ plot_builder = PlotBuilder2D({
 
     'html': 'M' + '.html',
     'online': False,
+    'as_annotation': True,
 })
 
 plot_builder.make_plot()

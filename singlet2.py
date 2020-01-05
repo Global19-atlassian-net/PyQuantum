@@ -80,7 +80,7 @@ result = []
 # print(m)
 # exit(0)
 
-_a = [
+states = [
     {
         'name': 's_2',
         'ampl': [1, 0],
@@ -93,7 +93,26 @@ _a = [
 
 k = 0
 
-for i in _a:
+T = 1 * config.mks
+
+l = config.g / 1000
+
+dt = (0.01/l)
+
+nt = int(T/dt)
+
+cavity.info()
+
+cprint('T:', 'green', end='')
+print(T / config.mks, 'mks')
+
+cprint('dt:', 'green', end='')
+print(dt / config.ns, 'ns')
+
+cprint('nt:', 'green', end='')
+print(nt)
+
+for i in states:
     hr(100)
     # print(i[0][0])
     # w_0 = s_2 * i[0][0]
@@ -116,9 +135,9 @@ for i in _a:
     cnt = run2({
         "ro_0": ro_t,
         "H": H,
-        "T": config.T,
-        "dt": config.dt,
-        "nt": config.nt,
+        "T": T,
+        "dt": dt,
+        "nt": nt,
         "thres": 0.1,
         "sink_list": sink_list,
         "T_list": T_list,
@@ -129,11 +148,11 @@ for i in _a:
         'lindblad': {
             'in': {
                 'L': operator_across(H, H.capacity, H.cavity.n_atoms),
-                'l': config.l
+                'l': l
             },
             'out': {
                 'L': operator_a(H, H.capacity, H.cavity.n_atoms),
-                'l': config.l
+                'l': l
             }
         },
     })
@@ -150,10 +169,13 @@ for i in _a:
     for params in ['cnt', 'T_list', 'fidelity_t0', 'fidelity_s2']:
         print(d)
         list_to_csv(d[params], 'out_2/' + params + str(k) + '.csv')
+    k += 1
+
+# =====================================================================================================================
     # list_to_csv(d['fidelity_s2'], 'oout/fidelity_s2' + str(k) + '.csv')
     # list_to_csv([d['cnt']], 'oout/cnt' + str(k) + '.csv')
     # list_to_csv(d['T_list'], 'oout/T_list_' + str(k) + '.csv')
-    k += 1
+
     # result.append(d)
 
     # print(result)

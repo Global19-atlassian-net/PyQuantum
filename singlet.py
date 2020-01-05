@@ -93,6 +93,12 @@ result = []
 
 k = 0
 
+T = 1 * mks
+
+dt = (0.01/l)
+
+nt = int(T/dt)
+
 for i in _a:
     hr(100)
     # print(i[0][0])
@@ -116,9 +122,9 @@ for i in _a:
     cnt = run2({
         "ro_0": ro_t,
         "H": H,
-        "T": config.T,
-        "dt": config.dt,
-        "nt": config.nt,
+        "T": T,
+        "dt": dt,
+        "nt": nt,
         "thres": 0.1,
         "sink_list": sink_list,
         "T_list": T_list,

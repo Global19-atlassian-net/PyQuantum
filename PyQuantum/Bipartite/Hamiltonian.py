@@ -10,8 +10,8 @@ import copy
 # -------------------------------------------------------------------------------------------------
 # Common
 from PyQuantum.Common.Matrix import *
-from PyQuantum.Common.Assert import *
-from PyQuantum.Common.Print import *
+from PyQuantum.Tools.Assert import *
+from PyQuantum.Tools.Print import *
 # -------------------------------------------------------------------------------------------------
 import pandas as pd
 
@@ -19,16 +19,17 @@ import pandas as pd
 class Hamiltonian:
     # ---------------------------------------------------------------------------------------------
     def __init__(self, capacity, cavity):
-        Assert(isinstance(cavity, Cavity), "cavity is not Cavity", cf())
-        Assert(isinstance(capacity, int), "capacity is not int", cf())
-        Assert(capacity > 0, "capacity <=0", cf())
+        Assert(isinstance(cavity, Cavity),
+               "cavity is not Cavity", FILE(), LINE())
+        Assert(isinstance(capacity, int), "capacity is not int", FILE(), LINE())
+        Assert(capacity > 0, "capacity <=0", FILE(), LINE())
 
         self.cavity = cavity
 
         self.D = {}
 
         # ------------
-        n = cavity.n
+        n = cavity.n_atoms
 
         wc = cavity.wc
         wa = cavity.wa

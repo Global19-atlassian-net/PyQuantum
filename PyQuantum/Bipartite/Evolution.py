@@ -99,9 +99,9 @@ def run_wf(w_0, H, dt, nt, config, fidelity_mode=False):
     ind_1 = None
 
     for k, v in H.states.items():
-        if v == [0, H.cavity.n]:
+        if v == [0, H.cavity.n_atoms]:
             ind_0 = k
-        elif v == [H.cavity.n, 0]:
+        elif v == [H.cavity.n_atoms, 0]:
             ind_1 = k
 
     with open(config.z_csv, "w") as csv_file:

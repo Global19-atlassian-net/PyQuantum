@@ -1,6 +1,6 @@
 tree:
 	@ # @ tree -I '*.csv|*.pyc|*.html|out|__pycache__|old' > edit
-	tree -I "__pycache__|*.pyc|out" > edit_tree
+	tree -I "__pycache__|*.pyc|out|*.csv|*.gz|__init__.py|stuff|*.json|build|dist|LICENSE|README.md|Makefile|logs|PyQuantum.egg-info|sink_single_out|setup.py|install_python*" > edit_tree
 
 setup:
 	@ rm dist/* 2>/dev/null || true;

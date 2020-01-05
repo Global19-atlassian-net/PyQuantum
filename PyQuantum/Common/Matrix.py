@@ -12,8 +12,8 @@ class Matrix:
     # ---------------------------------------------------------------------------------------------
 
     def __init__(self, m, n, dtype):
-        Assert(m > 0, "m <= 0", FILE(), LINE())
-        Assert(n > 0, "n <= 0", FILE(), LINE())
+        Assert(m > 0, "m <= 0")
+        Assert(n > 0, "n <= 0")
 
         self.m = m
         self.n = n
@@ -49,7 +49,7 @@ class Matrix:
     # ---------------------------------------------------------------------------------------------
 
     def check_hermiticity(ro):
-        Assert(self.is_hermitian(), "not hermitian", FILE(), LINE())
+        Assert(self.is_hermitian(), "not hermitian")
     # ---------------------------------------------------------------------------------------------
 
     def abs_trace(self):
@@ -133,7 +133,7 @@ class Matrix:
     # ---------------------------------------------------------------------------------------------
     def check_hermiticity(self):
         Assert(np.all(abs(self.data - self.data.getH()) < eps),
-               "matrix is not hermitian", FILE(), LINE())
+               "matrix is not hermitian")
     # ---------------------------------------------------------------------------------------------
 
     # -------------------------------------------------------------------------------------------------
@@ -144,7 +144,7 @@ class Matrix:
         I = np.eye(len(data))
 
         Assert(np.all(abs(data.dot(data_H) - I) < eps)
-               and np.all(abs(data_H.dot(data) - I) < eps), "matrix is not unitary", FILE(), LINE())
+               and np.all(abs(data_H.dot(data) - I) < eps), "matrix is not unitary")
 
         return
     # -------------------------------------------------------------------------------------------------

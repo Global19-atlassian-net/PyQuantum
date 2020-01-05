@@ -1,9 +1,9 @@
 .
+├── 3d.py
 ├── article.py
+├── avg.py
 ├── bin
 │   ├── config.py
-│   ├── PyQuantum
-│   │   └── TC
 │   ├── run_bpg_l.py
 │   ├── run_bpg.py
 │   ├── run_bp_l.py
@@ -16,237 +16,36 @@
 │   └── config.py
 ├── BipartiteGeneral
 ├── BipartiteLindblad
-├── build
-│   └── lib
-│       ├── examples
-│       │   ├── config.py
-│       │   ├── run_bpl.py
-│       │   └── run_bp.py
-│       ├── lib
-│       │   ├── Common
-│       │   │   ├── Assert.py
-│       │   │   ├── C_n_k.py
-│       │   │   ├── ext.py
-│       │   │   ├── Fidelity.py
-│       │   │   ├── html.py
-│       │   │   ├── __init__.py
-│       │   │   ├── LoadPackage.py
-│       │   │   ├── Matrix.py
-│       │   │   ├── Print.py
-│       │   │   ├── PyPlot3dng.py
-│       │   │   ├── PyPlot3d.py
-│       │   │   ├── PyPlot.py
-│       │   │   └── STR.py
-│       │   ├── examples
-│       │   │   ├── config.py
-│       │   │   ├── run_bpl.py
-│       │   │   └── run_bp.py
-│       │   └── py.py
-│       └── PyQuantum
-│           ├── Bipartite
-│           │   ├── Cavity.py
-│           │   ├── config2.py
-│           │   ├── config_backup.py
-│           │   ├── config.py
-│           │   ├── DensityMatrix.py
-│           │   ├── Evolution.py
-│           │   ├── FormHandler.py
-│           │   ├── Hamiltonian.py
-│           │   ├── __init__.py
-│           │   ├── make_config.py
-│           │   ├── run.py
-│           │   ├── Unitary.py
-│           │   └── WaveFunction.py
-│           ├── BipartiteLindblad
-│           │   ├── Cavity.py
-│           │   ├── config.py
-│           │   ├── DensityMatrix.py
-│           │   ├── Evolution.py
-│           │   ├── Hamiltonian.py
-│           │   ├── __init__.py
-│           │   ├── Unitary.py
-│           │   └── WaveFunction.py
-│           ├── Common
-│           │   ├── Assert.py
-│           │   ├── C_n_k.py
-│           │   ├── ext.py
-│           │   ├── Fidelity.py
-│           │   ├── html.py
-│           │   ├── __init__.py
-│           │   ├── LoadPackage.py
-│           │   ├── Matrix.py
-│           │   ├── PlotBuilder3D.py
-│           │   ├── Print.py
-│           │   ├── PyPlot3dng.py
-│           │   ├── PyPlot3d.py
-│           │   ├── PyPlot.py
-│           │   ├── STR.py
-│           │   └── Tools.py
-│           ├── examples
-│           │   ├── Bipartite
-│           │   │   └── config.py
-│           │   ├── BipartiteLindblad
-│           │   │   └── config.py
-│           │   ├── config.py
-│           │   ├── run_bpl.py
-│           │   ├── run_bp.py
-│           │   └── TC
-│           │       └── config.py
-│           ├── py.py
-│           ├── TC
-│           │   ├── animator.py
-│           │   ├── AtomicBase.py
-│           │   ├── Cavity.py
-│           │   ├── config.py
-│           │   ├── DensityMatrix.py
-│           │   ├── Evolution.py
-│           │   ├── FullBase.py
-│           │   ├── Hamiltonian.py
-│           │   ├── HamiltonianTC.py
-│           │   ├── __init__.py
-│           │   ├── PlotBuilder3D.py
-│           │   ├── State.py
-│           │   ├── Unitary.py
-│           │   └── WaveFunction.py
-│           └── TCL
-│               ├── Cavity.py
-│               ├── config.py
-│               ├── DensityMatrix.py
-│               ├── Evolution.py
-│               ├── Hamiltonian.py
-│               ├── __init__.py
-│               ├── Unitary.py
-│               └── WaveFunction.py
 ├── dark_cmp.pl
-├── dark_dense
-├── dark_sparse
 ├── DarkStates.py
 ├── DarkSystem.py
 ├── DarkSystemSparse.py
 ├── dense_dark_matrix.py
-├── dist
-│   ├── PyQuantum-1.0.53-py3-none-any.whl
-│   └── PyQuantum-1.0.53.tar.gz
 ├── edit
 ├── edit_tree
+├── edit_tree_fin
+├── __imp.py
 ├── ipynb
+│   ├── Bipartite
 │   ├── bpg.ipynb
 │   ├── bpg_l.ipynb
 │   ├── bpgl.ipynb
 │   ├── bp.ipynb
 │   ├── bp_l.ipynb
-│   ├── PyQuantum
-│   │   └── TC
 │   ├── TC.ipynb
 │   └── TCM_Full.ipynb
-├── LICENSE
-├── logs
-│   └── rank.log
-├── Makefile
-├── Mathematica
-│   ├── Untitled-1.nb
-│   └── Untitled-2.nb
-├── old
-│   ├── atomic.py
-│   ├── eye.py
-│   ├── hamming.py
-│   ├── Iplot.py
-│   ├── orb.py
-│   ├── peak.py
-│   ├── PyQuantum
-│   │   ├── TC
-│   │   │   ├── animator.py
-│   │   │   ├── AtomicBase.py
-│   │   │   ├── Cavity.py
-│   │   │   ├── config.py
-│   │   │   ├── DensityMatrix.py
-│   │   │   ├── Evolution.py
-│   │   │   ├── FullBase.py
-│   │   │   ├── Hamiltonian.py
-│   │   │   ├── HamiltonianTC.py
-│   │   │   ├── State.py
-│   │   │   ├── Unitary.py
-│   │   │   └── WaveFunction.py
-│   │   ├── TC_Full
-│   │   │   ├── animator.py
-│   │   │   ├── AtomicBase.py
-│   │   │   ├── Cavity.py
-│   │   │   ├── config.py
-│   │   │   ├── DensityMatrix.py
-│   │   │   ├── Evolution.py
-│   │   │   ├── FullBase.py
-│   │   │   ├── Hamiltonian.py
-│   │   │   ├── HamiltonianTC.py
-│   │   │   ├── __init__.py
-│   │   │   ├── State.py
-│   │   │   ├── TC
-│   │   │   │   ├── animator.py
-│   │   │   │   ├── AtomicBase.py
-│   │   │   │   ├── Cavity.py
-│   │   │   │   ├── config.py
-│   │   │   │   ├── DensityMatrix.py
-│   │   │   │   ├── Evolution.py
-│   │   │   │   ├── FullBase.py
-│   │   │   │   ├── Hamiltonian.py
-│   │   │   │   ├── HamiltonianTC.py
-│   │   │   │   ├── State.py
-│   │   │   │   ├── Unitary.py
-│   │   │   │   └── WaveFunction.py
-│   │   │   ├── Unitary.py
-│   │   │   └── WaveFunction.py
-│   │   ├── TCH
-│   │   │   ├── AtomicBase.py
-│   │   │   ├── CavityChain.py
-│   │   │   ├── Cavity.py
-│   │   │   ├── config.py
-│   │   │   ├── DensityMatrix.py
-│   │   │   ├── Evolution.py
-│   │   │   ├── FullBase.py
-│   │   │   ├── Hamiltonian_old.py
-│   │   │   ├── Hamiltonian.py
-│   │   │   ├── State.py
-│   │   │   ├── Unitary.py
-│   │   │   └── WaveFunction.py
-│   │   ├── TCH_Full
-│   │   │   ├── animator.py
-│   │   │   ├── AtomicBase.py
-│   │   │   ├── CavityChain.py
-│   │   │   ├── Cavity.py
-│   │   │   ├── config.py
-│   │   │   ├── DensityMatrix.py
-│   │   │   ├── Evolution.py
-│   │   │   ├── FullBase.py
-│   │   │   ├── Hamiltonian_old.py
-│   │   │   ├── Hamiltonian.py
-│   │   │   ├── State.py
-│   │   │   ├── Unitary.py
-│   │   │   └── WaveFunction.py
-│   │   └── TCM_Full
-│   │       └── TC
-│   │           ├── animator.py
-│   │           ├── AtomicBase.py
-│   │           ├── Cavity.py
-│   │           ├── config.py
-│   │           ├── DensityMatrix.py
-│   │           ├── Evolution.py
-│   │           ├── FullBase.py
-│   │           ├── Hamiltonian.py
-│   │           ├── HamiltonianTC.py
-│   │           ├── State.py
-│   │           ├── Unitary.py
-│   │           └── WaveFunction.py
-│   ├── run_tc_full.py
-│   ├── run_tch_full.py
-│   ├── run_tch.py
-│   ├── run_tc.py
-│   ├── TC_Full.ipynb
-│   ├── TCH_Full.ipynb
-│   ├── TCH.ipynb
-│   ├── TC.ipynb
-│   ├── test.py
-│   └── t.py
+├── many_cv.py
+├── plot3d_example.py
+├── plot_all.py
+├── plot_M3D.py
+├── plot_M_diff.py
+├── plot_M.py
+├── plot_p.py
+├── plot_sink.py
 ├── p.py
 ├── PyQuantum
+│   ├── Base
+│   │   └── BaseCavity.py
 │   ├── Bipartite
 │   │   ├── Cavity.py
 │   │   ├── Config
@@ -263,7 +62,6 @@
 │   │   ├── Evolution.py
 │   │   ├── FormHandler.py
 │   │   ├── Hamiltonian.py
-│   │   ├── __init__.py
 │   │   ├── make_config.py
 │   │   ├── run.py
 │   │   ├── Unitary.py
@@ -274,7 +72,6 @@
 │   │   ├── DensityMatrix.py
 │   │   ├── Evolution.py
 │   │   ├── Hamiltonian.py
-│   │   ├── __init__.py
 │   │   ├── Unitary.py
 │   │   └── WaveFunction.py
 │   ├── BipartiteGeneralLindblad
@@ -283,7 +80,6 @@
 │   │   ├── DensityMatrix.py
 │   │   ├── Evolution.py
 │   │   ├── Hamiltonian.py
-│   │   ├── __init__.py
 │   │   ├── Unitary.py
 │   │   └── WaveFunction.py
 │   ├── BipartiteLindblad
@@ -292,25 +88,21 @@
 │   │   ├── DensityMatrix.py
 │   │   ├── Evolution.py
 │   │   ├── Hamiltonian.py
-│   │   ├── __init__.py
-│   │   ├── sftp-config.json
 │   │   ├── Unitary.py
 │   │   └── WaveFunction.py
 │   ├── Common
 │   │   ├── C_n_k.py
 │   │   ├── Fidelity.py
 │   │   ├── html.py
-│   │   ├── __init__.py
 │   │   ├── LoadPackage.py
 │   │   ├── Matrix.py
 │   │   ├── PyPlot3dng.py
 │   │   ├── PyPlot3d.py
 │   │   ├── PyPlot.py
 │   │   ├── Quantum
-│   │   │   ├── __init__.py
+│   │   │   ├── Fidelity.py
 │   │   │   └── Operators.py
 │   │   ├── SparseMatrix
-│   │   │   ├── __init__.py
 │   │   │   ├── ItemHandler.py
 │   │   │   ├── operators.py
 │   │   │   ├── Print.py
@@ -338,10 +130,7 @@
 │   │       └── config.py
 │   ├── PlotBuilder
 │   │   └── PlotBuilder3D.py
-│   ├── py.py
-│   ├── stuff
-│   │   └── TCL
-│   │       └── Hamiltonian.py
+│   ├── py2.py
 │   ├── TC
 │   │   ├── animator.py
 │   │   ├── AtomicBase.py
@@ -352,13 +141,11 @@
 │   │   ├── Evolution.py
 │   │   ├── FullBase.py
 │   │   ├── Hamiltonian.py
-│   │   ├── __init__.py
 │   │   ├── old
 │   │   │   ├── Hamiltonian_naive.py
 │   │   │   ├── Hamiltonian.py
 │   │   │   └── HamiltonianTC.py
 │   │   ├── PlotBuilder3D.py
-│   │   ├── rank.cpp
 │   │   ├── State.py
 │   │   ├── Unitary.py
 │   │   └── WaveFunction.py
@@ -368,40 +155,52 @@
 │   │   ├── DensityMatrix.py
 │   │   ├── Evolution.py
 │   │   ├── Hamiltonian.py
-│   │   ├── __init__.py
 │   │   ├── Unitary.py
 │   │   └── WaveFunction.py
 │   └── Tools
 │       ├── Assert.py
 │       ├── CartesianProduct.py
+│       ├── CSV.py
+│       ├── df_dx.py
 │       ├── Hz.py
-│       └── Print.py
-├── PyQuantum.egg-info
-│   ├── dependency_links.txt
-│   ├── entry_points.txt
-│   ├── PKG-INFO
-│   ├── requires.txt
-│   ├── SOURCES.txt
-│   └── top_level.txt
-├── README.md
-├── run_tc_wf.py
-├── setup.py
+│       ├── LoadPackage.py
+│       ├── MkDir.py
+│       ├── Pickle.py
+│       ├── PlotBuilder2D.py
+│       ├── PlotBuilder3D.py
+│       ├── Print.py
+│       └── Units.py
+├── rnd.py
+├── _run_
+│   └── run_tc_wf.py
+├── run_bp.py
+├── run.sh
+├── run_tests.pl
+├── singlet2.py
+├── singlet_N
 ├── singlet.py
+├── sink3d_mpi.py
+├── sink3d.py
+├── __sink_g_l.py
+├── sink.py
 ├── sparse_dark_matrix.py
 ├── spm.py
-├── swap_cols.py
-├── TCL.ipymb
 ├── test
 │   ├── test_tc
 │   │   └── tc_config.py
 │   ├── test_tcl
-│   │   ├── TC
 │   │   ├── tc_config.py
 │   │   └── tcl_config.py
 │   ├── test_tcl.pl
 │   └── test_tc.pl
+├── test_cavity.py
 ├── test_rank.py
 ├── tests_rank.py
-└── z_csv
+├── tocsv.py
+└── tt
+    ├── Untitled1.ipynb
+    ├── Untitled2.ipynb
+    ├── Untitled6.ipynb
+    └── Untitled.ipynb
 
-65 directories, 339 files
+32 directories, 171 files

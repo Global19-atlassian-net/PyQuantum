@@ -24,9 +24,10 @@ from PyQuantum.Tools.LoadPackage import load_pkg
 from PyQuantum.Tools.Assert import *
 from PyQuantum.Tools.Print import hr
 from PyQuantum.Tools.MkDir import *
-from PyQuantum.Tools.CSV import *
-from PyQuantum.Tools.Units import *
+# from PyQuantum.Tools.CSV import *
+# from PyQuantum.Tools.Units import *
 from PyQuantum.Tools.Hz import *
+from PyQuantum.Tools.Pickle import *
 # ---------------------------------------------------------------------------------------------------------------------
 # PyQuantum.Common
 from PyQuantum.Common.Quantum.Operators import operator_a
@@ -68,17 +69,19 @@ for g_coeff in g_list:
 
         cavity = Cavity(config.wc, config.wa, g, config.n_atoms)
 
+        # print(type(cavity))
         cavity.info()
-
+        # exit(0)
         H = Hamiltonian(config.capacity, cavity)
 
         if state_type == 't_0':
             w_0 = WaveFunction(states=H.states, init_state=[1, [0, 0]])
         elif state_type == 's_2':
             w_0 = WaveFunction(states=H.states, init_state=[1, [0, 1]], amplitude=1./sqrt(2)) - \
-                WaveFunction(states=H.states, init_state=[1, [1, 0]], amplitude=1./sqrt(2))
+                WaveFunction(states=H.states, init_state=[
+                             1, [1, 0]], amplitude=1./sqrt(2))
         else:
-            Assert(0 == 1, 'undefined state type', FILE(), LINE())
+            Assert(0 == 1, 'undefined state type')
 
         config_dt = (0.01 / l)
 
@@ -108,17 +111,25 @@ for g_coeff in g_list:
         z_data_g.append(T_list[-1])
 
         # -------------------------------------------------------------------------------------------------------------
-        list_to_csv(z_data_g, out_dir + '/t_' + str(g_coeff) + '_' + str(l_coeff) + '.csv')
+        pickle_dump(z_data_g, out_dir + '/t_' + str(g_coeff) +
+                    '_' + str(l_coeff) + '.pkl.gz')
+        # list_to_csv(z_data_g, out_dir + '/t_' +
+        # str(g_coeff) + '_' + str(l_coeff) + '.csv')
 
-        list_to_csv(T_list, out_dir + '/time_' + str(g_coeff) + '_' + str(l_coeff) + '.csv')
+        pickle_dump(T_list, out_dir + '/time_' + str(g_coeff) +
+                    '_' + str(l_coeff) + '.pkl.gz')
+        # list_to_csv(T_list, out_dir + '/time_' +
+        # str(g_coeff) + '_' + str(l_coeff) + '.csv')
 
-        list_to_csv(np.round(sink_list, 3), out_dir + '/sink_' + str(g_coeff) + '_' + str(l_coeff) + '.csv')
+        pickle_dump(np.round(sink_list, 3), out_dir + '/sink_' +
+                    str(g_coeff) + '_' + str(l_coeff) + '.pkl.gz')
+        # list_to_csv(np.round(sink_list, 3), out_dir + '/sink_' +
+        # str(g_coeff) + '_' + str(l_coeff) + '.csv')
         # -------------------------------------------------------------------------------------------------------------
 
     print('-' * 100)
     print()
 # ---------------------------------------------------------------------------------------------------------------------
-
 
 # for coeff in np.arange(4.00, 6.01, 1.00):
 #     config.l = config.g * coeff

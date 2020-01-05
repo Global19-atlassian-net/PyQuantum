@@ -12,7 +12,7 @@ ns = 1e-9  # 1 мкс
 
 # ---------------------------------------------------------------------------------------------------------------------
 def time_unit(time):
-    Assert(time >= 1e-9, 'time < 1 ns', FILE(), LINE())
+    # Assert(not(time != 0 and time < 1e-9), 'time < 1 ns')
 
     if time >= 1:
         unit = 's'
@@ -22,14 +22,37 @@ def time_unit(time):
         unit = 'mks'
     elif time >= 1e-9:
         unit = 'ns'
+    else:
+        unit = 'fs'
+
 
     return unit
 # ---------------------------------------------------------------------------------------------------------------------
 
 
 # ---------------------------------------------------------------------------------------------------------------------
+def time_unit_full(time, precision=3):
+    # Assert(not(time != 0 and time < 1e-9), 'time < 1 ns')
+    # Assert(time >= 1e-9, 'time < 1 ns')
+
+    if time >= 1:
+        return str(round(time, precision)) + ' s'
+    elif time >= 1e-3:
+        return str(round(time/1e-3, precision)) + ' ms'
+    elif time >= 1e-6:
+        return str(round(time/1e-6, precision)) + ' mks'
+    elif time >= 1e-9:
+        return str(round(time/1e-9, precision)) + ' ns'
+    else:
+        return str(round(time/1e-12, precision)) + ' ns'
+
+    return time
+# ---------------------------------------------------------------------------------------------------------------------
+
+
+# ---------------------------------------------------------------------------------------------------------------------
 def frequency_unit(frequency):
-    Assert(frequency >= 1, 'frequency < 1 Hz', FILE(), LINE())
+    Assert(frequency >= 1, 'frequency < 1 Hz')
 
     if frequency >= 1e9:
         unit = 'GHz'

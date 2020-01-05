@@ -3,7 +3,7 @@
 import numpy as np
 # -------------------------------------------------------------------------------------------------
 # Common
-from PyQuantum.Common.Assert import *
+from PyQuantum.Tools.Assert import *
 from PyQuantum.Common.Matrix import *
 # -------------------------------------------------------------------------------------------------
 
@@ -13,10 +13,11 @@ class WaveFunction(Matrix):
 
     # ---------------------------------------------------------------------------------------------
     def __init__(self, states, init_state, amplitude=1):
-        Assert(isinstance(states, dict), "states is not dict", cf())
-        Assert(isinstance(init_state, list), "init_state is not list", cf())
+        Assert(isinstance(states, dict), "states is not dict", FILE(), LINE())
+        Assert(isinstance(init_state, list),
+               "init_state is not list", FILE(), LINE())
 
-        Assert(len(states) > 1, "w_0 is not set", cf())
+        Assert(len(states) > 1, "w_0 is not set", FILE(), LINE())
 
         self.states = states
 
@@ -28,7 +29,7 @@ class WaveFunction(Matrix):
 
                 break
 
-        Assert(k_found, "w_0 is not set", cf())
+        Assert(k_found, "w_0 is not set", FILE(), LINE())
 
         super(WaveFunction, self).__init__(
             m=len(states), n=1, dtype=np.complex128)

@@ -1,28 +1,242 @@
+# ---------------------------------------------------------------------------------------------------------------------
+# system
+from math import sqrt
+# ---------------------------------------------------------------------------------------------------------------------
+# scientific
 import numpy as np
 from numpy import matrix, complex128
-from math import sqrt
-from scipy.sparse import lil_matrix
+from scipy.sparse import lil_matrix, csc_matrix
+# ---------------------------------------------------------------------------------------------------------------------
+# PyQuantum.Common
 from PyQuantum.Common.Matrix import Matrix
-
-
-def sigma_x():
-    return matrix([[0, 1], [1, 0]], dtype=complex128)
-
-
-def sigma_y():
-    return matrix([[0, complex(0, -1)], [complex(0, 1), 0]], dtype=complex128)
-
-
-def sigma_z():
-    return matrix([[1, 0], [0, -1]], dtype=complex128)
-
-
-def Hadamard():
-    return 1.0 / sqrt(2) * matrix([[1, 1], [1, -1]], dtype=complex128)
+# ---------------------------------------------------------------------------------------------------------------------
 
 
 # ---------------------------------------------------------------------------------------------------------------------
-def operator_a(H, m, n):
+# -------------------------------------------------------- SIGMA_X ----------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
+def sigma_x():
+    return matrix([[0, 1], [1, 0]], dtype=complex128)
+# ---------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
+
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------- SIGMA_Y ----------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
+def sigma_y():
+    return matrix([[0, complex(0, -1)], [complex(0, 1), 0]], dtype=complex128)
+# ---------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
+
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------- SIGMA_Z ----------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
+def sigma_z():
+    return matrix([[1, 0], [0, -1]], dtype=complex128)
+# ---------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
+
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------- HADAMARD ---------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
+def Hadamard():
+    return 1.0 / sqrt(2) * matrix([[1, 1], [1, -1]], dtype=complex128)
+# ---------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
+
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------- OPERATOR_A3 ------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
+def operator_a3(H, ph_type=1):
+    H_size = H.size
+    size = H_size
+
+    data = np.array([np.zeros(size) for i in range(size)])
+
+    if ph_type == 1:
+        for k_from, v_from in enumerate(H.states):
+            ph = v_from[0]
+
+            if ph > 0:
+                to_state = [ph - 1, v_from[1]] + [v_from[2]] + [[v_from[3][0]+1, v_from[3][1]]]
+                print(v_from)
+                # print(v_from[1])
+                # print(v_from[2])
+                # print(v_from[3])
+                print(to_state)
+                # exit(0)
+                for k_to, v_to in enumerate(H.states):
+                    if to_state == v_to:
+                        data[k_to][k_from] = sqrt(ph)
+                # data[k_to][k_from] = sqrt(ph)
+    elif ph_type == 2:
+        for k_from, v_from in enumerate(H.states):
+            ph = v_from[1]
+
+            if ph > 0:
+                to_state = [v_from[0], ph - 1] + [v_from[2]] + [[v_from[3][0], v_from[3][1]+1]]
+
+                # to_state = [v_from[0], ph - 1] + v_from[2:]
+
+                for k_to, v_to in enumerate(H.states):
+                    if to_state == v_to:
+                        data[k_to][k_from] = sqrt(ph)
+    a = Matrix(H.size, H.size, dtype=np.complex128)
+    a.size = H.size
+    a.data = lil_matrix(data, dtype=np.complex128)
+
+    return a
+
+def operator_a3all(H):
+    H_size = H.size
+    size = H_size
+
+    data = np.array([np.zeros(size) for i in range(size)])
+
+    # ph_type = 1
+    for k_from, v_from in enumerate(H.states):
+        ph = v_from[0]
+
+        if ph > 0:
+            to_state = [ph - 1, v_from[1]] + [v_from[2]] + [[v_from[3][0]+1, v_from[3][1]]]
+                # print(v_from[1])
+                # print(v_from[2])
+                # print(v_from[3])
+                # print(to_state)
+                # exit(0)
+            for k_to, v_to in enumerate(H.states):
+                if to_state == v_to:
+                    data[k_to][k_from] = sqrt(ph)
+                    print(v_from, '->', to_state)
+                # data[k_to][k_from] = sqrt(ph)
+    
+    # ph_type = 2
+    for k_from, v_from in enumerate(H.states):
+        ph = v_from[1]
+
+        if ph > 0:
+            to_state = [v_from[0], ph - 1] + [v_from[2]] + [[v_from[3][0], v_from[3][1]+1]]
+
+                # to_state = [v_from[0], ph - 1] + v_from[2:]
+
+            for k_to, v_to in enumerate(H.states):
+                if to_state == v_to:
+                    data[k_to][k_from] = sqrt(ph)
+                    # print(v_from, '->', to_state)
+
+    # exit(0)
+    a = Matrix(H.size, H.size, dtype=np.complex128)
+    a.size = H.size
+    a.data = lil_matrix(data, dtype=np.complex128)
+
+    return a
+
+def operator_a3all_new(H, ph_type=1):
+    H_size = H.size
+    size = H_size
+
+    data = np.array([np.zeros(size) for i in range(size)])
+
+    # ph_type = 1
+    if ph_type == 1:
+        for k_from, v_from in enumerate(H.states):
+            ph = v_from[0]
+
+            if ph > 0:
+                to_state = [ph - 1, v_from[1]] + [v_from[2]] + [[v_from[3][0]+1, v_from[3][1]]]
+                    # print(v_from[1])
+                    # print(v_from[2])
+                    # print(v_from[3])
+                    # print(to_state)
+                    # exit(0)
+                for k_to, v_to in enumerate(H.states):
+                    if to_state == v_to:
+                        data[k_to][k_from] = sqrt(ph)
+                        print(v_from, '->', to_state)
+                # data[k_to][k_from] = sqrt(ph)
+    
+    # ph_type = 2
+    elif ph_type == 2:
+        for k_from, v_from in enumerate(H.states):
+            ph = v_from[1]
+
+            if ph > 0:
+                to_state = [v_from[0], ph - 1] + [v_from[2]] + [[v_from[3][0], v_from[3][1]+1]]
+
+                    # to_state = [v_from[0], ph - 1] + v_from[2:]
+
+                for k_to, v_to in enumerate(H.states):
+                    if to_state == v_to:
+                        data[k_to][k_from] = sqrt(ph)
+                        # print(v_from, '->', to_state)
+
+    # exit(0)
+    a = Matrix(H.size, H.size, dtype=np.complex128)
+    a.size = H.size
+    a.data = lil_matrix(data, dtype=np.complex128)
+
+    return a
+# def operator_a3(H, ph_type=1):
+#     H_size = H.size
+#     size = H_size
+
+#     data = np.array([np.zeros(size) for i in range(size)])
+
+#     if ph_type == 1:
+#         for k_from, v_from in enumerate(H.states):
+#             ph = v_from[0]
+
+#             if ph > 0:
+#                 to_state = [ph - 1, v_from[1]] + v_from[2:]
+
+#                 for k_to, v_to in enumerate(H.states):
+#                     if to_state == v_to:
+#                         data[k_to][k_from] = sqrt(ph)
+#     elif ph_type == 2:
+#         for k_from, v_from in enumerate(H.states):
+#             ph = v_from[1]
+
+#             if ph > 0:
+#                 to_state = [v_from[0], ph - 1] + v_from[2:]
+
+#                 for k_to, v_to in enumerate(H.states):
+#                     if to_state == v_to:
+#                         data[k_to][k_from] = sqrt(ph)
+
+#     a = Matrix(H.size, H.size, dtype=np.complex128)
+#     a.size = H.size
+#     a.data = lil_matrix(data, dtype=np.complex128)
+
+#     # a_dense = a.data.toarray()
+
+#     # for i in range(H.size):
+#     #     for j in range(H.size):
+#     #         if abs(a.data[i, j]) != 0:
+#     #             print(i, j, abs(a.data[i, j]))
+#     #             print(H.states[i], H.states[j])
+#     #             print()
+#     # for i in len()
+#     # print(a.data[0,0])
+#     # exit(0)
+#     return a
+#     # return sp.csc_matrix(np.matrix(a))
+# ---------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
+
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------- OPERATOR_A -------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
+def operator_a(H):
     H_size = H.size
     size = H_size
 
@@ -50,13 +264,29 @@ def operator_a(H, m, n):
     #             print(H.states[j], " -> ", H.states[i], ": ", np.round(data[i][j], 3), sep="")
 
     a = Matrix(H.size, H.size, dtype=np.complex128)
+    a.size = H.size
     a.data = lil_matrix(data, dtype=np.complex128)
 
+    # a_dense = a.data.toarray()
+
+    # for i in range(H.size):
+    #     for j in range(H.size):
+    #         if abs(a.data[i, j]) != 0:
+    #             print(i, j, abs(a.data[i, j]))
+    #             print(H.states[i], H.states[j])
+    #             print()
+    # for i in len()
+    # print(a.data[0,0])
+    # exit(0)
     return a
     # return sp.csc_matrix(np.matrix(a))
 # ---------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
 
 
+
+# ---------------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------- OPERATOR_ACROSSA -------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------
 def operator_acrossa(H, m, n):
     op_a = operator_a(H, m, n)
@@ -67,8 +297,12 @@ def operator_acrossa(H, m, n):
 
     return matrix
 # ---------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
 
 
+
+# ---------------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------- OPERATOR_ACROSS --------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------
 def operator_across(H, m, n):
     op_a = operator_a(H, m, n)
@@ -81,8 +315,12 @@ def operator_across(H, m, n):
 
     return matrix
 # ---------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
 
 
+
+# ---------------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------- OPERATOR_AACROSS -------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------
 def operator_aacross(H, m, n):
     op_a = operator_a(H, m, n)
@@ -93,8 +331,12 @@ def operator_aacross(H, m, n):
 
     return matrix
 # ---------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
 
 
+
+# ---------------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------- OPERATOR_L -------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------
 def operator_L(ro, lindblad):
     l = lindblad['l']
@@ -103,6 +345,7 @@ def operator_L(ro, lindblad):
     Lcross = L.getH()
     LcrossL = Lcross.dot(L)
 
+    # print(L)
     # l = []
 
     # L = []
@@ -141,7 +384,8 @@ def operator_L(ro, lindblad):
         L2 = np.dot(ro.data, LcrossL) + np.dot(LcrossL, ro.data)
         # L2 = np.dot(np.dot(ro.data, L_cross[i]), L[i]) + np.dot(np.dot(L_cross[i], L[i]), ro.data)
 
-        L_ro.data += l * lil_matrix(L1 - 0.5 * L2, dtype=np.complex128)
+        # L_ro.data += csc_matrix(L1 - 0.5 * L2)
+        L_ro.data += l * csc_matrix(L1 - 0.5 * L2, dtype=np.complex128)
         # L_ro.data += l[i] * lil_matrix(L1 - 0.5 * L2, dtype=np.complex128)
         # print()
         # ro.print()
@@ -163,6 +407,7 @@ def operator_L(ro, lindblad):
         # return L
 
     return b
+# ---------------------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------
 
 # =====================================================================================================================

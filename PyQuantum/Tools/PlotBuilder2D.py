@@ -1,7 +1,10 @@
 import plotly.plotly as py
+# import chart_studio.plotly as py
+# import chart_studio
 import plotly.graph_objs as go
+# import chart_studio.plotly.graph_objs as go
 
-from PyQuantum.Tools.PlotBuilder2D import *
+# from PyQuantum.Tools.PlotBuilder2D import *
 
 import plotly
 
@@ -63,6 +66,7 @@ def change_token():
 
 
 plotly.tools.set_credentials_file(token[0]['login'], token[0]['key'])
+# chart_studio.tools.set_credentials_file(token[0]['login'], token[0]['key'])
 
 
 class PlotBuilder2D:
@@ -79,8 +83,85 @@ class PlotBuilder2D:
         self.to_file = args['to_file']if 'to_file' in args else None
         self.online = args['online'] if 'online' in args else None
 
+        if 'as_annotation' in args:
+            self.as_annotation = args['as_annotation']
+            self.x_title_annotation = self.x_title
+            self.y_title_annotation = self.y_title
+
+            self.x_title = None
+            self.y_title = None
+        else:
+            self.as_annotation = None
+
+        self.x_min = min(self.data[0]['x'])
+        self.x_max = max(self.data[0]['x'])
+
+        self.y_min = min(self.data[0]['y'])
+        self.y_max = max(self.data[0]['y'])
+
+        for i in self.data[1:]:
+            self.x_min = min(self.x_min, min(i['x']))
+            self.x_max = max(self.x_max, max(i['x']))
+
+            self.y_min = min(self.y_min, min(i['y']))
+            self.y_max = max(self.y_max, max(i['y']))
+
+        # print(self.x_title)
+        # exit(0)
+
+        # self.y_range = args['y_range'] if 'y_range' in args else [0, 1]
+
     def make_plot(self):
         layout = dict(
+            annotations=[
+                {
+                    'xref': 'paper',
+                    'yref': 'paper',
+                    # 'x': -0.1,
+                    # 'x': -0.095,
+                    'x': -0.1175,
+                    'xanchor': 'left',
+                    'y': 0.5,
+                    'yanchor': 'middle',
+                    'text': self.y_title_annotation,
+                    'showarrow': False,
+                    'font': dict(
+                        # --------------------------------
+                        family='Lato',
+                        # family="Courier New, monospace",
+                        # family='Open Sans, sans-serif',
+                        # --------------------------------
+
+                        size=20,
+
+                        color="#222"
+                    ),
+                }, {
+                    'xref': 'paper',
+                    'yref': 'paper',
+                    # 'x': 0,
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    # 'y': -0.3,
+                    'y': -0.175,
+                    'yanchor': 'bottom',
+                    'text': self.x_title_annotation,
+                    'showarrow': False,
+                    'font': dict(
+                        # --------------------------------
+                        family='Lato',
+                        # family="Courier New, monospace",
+                        # family='Open Sans, sans-serif',
+                        # --------------------------------
+
+                        size=20,
+
+                        color="#222"
+                    ),
+                }],
+            orientation=0,
+            width=1024,
+            height=600,
             titlefont=dict(
                 # --------------------------------
                 family='Lato',
@@ -97,7 +178,10 @@ class PlotBuilder2D:
                 'title': self.x_title,
                 'linewidth': 2,
                 'ticks': 'outside',
+                # 'zeroline': True,
+                'showline': True,
                 'zeroline': False,
+                # 'showline': False,
                 'titlefont': dict(
                     family='Lato',
                     #     color="#000000",
@@ -110,12 +194,19 @@ class PlotBuilder2D:
                     color="#222",
                     size=16,
                 ),
+                'range': [self.x_min, self.x_max],
             },
             yaxis={
                 'title': self.y_title,
-                'tickangle': 0,
+                # 'tickangle': 0,
+                'range': [self.y_min, self.y_max],
+                # 'autorange': True,
                 'linewidth': 2,
                 'ticks': 'outside',
+
+                # 'zeroline': True,
+                'showline': True,
+                # 'ticks': 'outside',
                 'zeroline': False,
                 'titlefont': dict(
                     family='Lato',
@@ -129,10 +220,42 @@ class PlotBuilder2D:
                     color="#222",
                     size=16,
                 ),
+                # 'tickangle': 90,
             },
+            legend=go.layout.Legend(
+                # x=0,
+                # y=1,
+                # traceorder="normal",
+                font=dict(
+                    # family="sans-serif",
+                    size=16,
+                    color="#222",
+                    family='Lato',
+
+                ),
+                # bgcolor="LightSteelBlue",
+                # bordercolor="Black",
+                # borderwidth=2
+            ),
         )
 
         fig = dict(data=self.data, layout=layout)
+
+        # fig['layout'].update_layout(
+        #     legend=go.layout.Legend(
+        #         # x=0,
+        #         # y=1,
+        #         # traceorder="normal",
+        #         font=dict(
+        #             # family="sans-serif",
+        #             size=22,
+        #             # color="black"
+        #         ),
+        #         # bgcolor="LightSteelBlue",
+        #         # bordercolor="Black",
+        #         # borderwidth=2
+        #     )
+        # )
 
         if self.online:
             py.plot(fig, filename=self.html)

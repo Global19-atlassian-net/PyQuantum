@@ -58,4 +58,4 @@ plot_builder = PlotBuilderData3D({
     },
 })
 
-plot_builder.make_plot()
+plot_builder.make_plot(online=True)

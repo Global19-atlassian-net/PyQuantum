@@ -1,6 +1,6 @@
-numpy
-scipy
-pandas
-matplotlib
-plotly
 importlib
+matplotlib
+numpy
+pandas
+plotly
+scipy
